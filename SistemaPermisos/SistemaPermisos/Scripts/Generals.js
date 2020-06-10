@@ -34,11 +34,15 @@ var listar = function (url, arrayColumnas, parameters) {
 
 function Table(arrayColumnas, data) {
 
-    var tabla = document.getElementById("table");
+    var container = document.getElementById("container");;
+    container.classList.add("container");
     var contenido = "";
 
-    contenido += "<tr>";
+    contenido += "<input type='button' id='BtnAdd' value='Add' class='btn btn-success' onclick='AbrirModal()'/>";
 
+    contenido += "<table class='table mt-5'>";
+
+    contenido += "<tr>";
 
     for (i = 0; i < arrayColumnas.length; i++) {
         contenido += "<th>";
@@ -50,7 +54,9 @@ function Table(arrayColumnas, data) {
 
     contenido += "</tr>";
 
-    var llaves = Object.keys(data[0]);
+ 
+  
+    var id;
 
     for (row = 0; row < data.length; row++) {
 
@@ -63,15 +69,21 @@ function Table(arrayColumnas, data) {
             contenido += "<td>";
             contenido += data[row][cell];
             contenido += "</td>";
+
+
+            /*DE MANERA PERRONA OBTENEMOS EL ID PARA FILTRAR*/
+            if (celda == 0) {
+                id = data[row][cell];
+            }
+       
         }
 
-       
-     
-        var id = llaves[0];
-      
+
+
+ 
         contenido += "<td>";
-        contenido += "<button id='BtnEditar' class='editar btn btn-info btn-sm pb-5 style='height:30px' onclick='RecuperarInfo(" +id+"); '>  <i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
-        contenido += "<button class='eliminar btn btn-danger btn-sm pb-5 pl-5' style='height:30px' '> <i class='fa fa-trash' aria-hidden='true'></i></button>";
+        contenido += "<button id='BtnEditar' class='editar btn btn-info btn-sm pb-5 style='height:30px' onclick='RecuperarInfo("+id+");'>  <i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
+        contenido += "<button class='eliminar btn btn-danger btn-sm pb-5 pr-5' style='height:30px' '> <i class='fa fa-trash' aria-hidden='true'></i></button>";
         contenido += "</td>";
 
 
@@ -79,13 +91,11 @@ function Table(arrayColumnas, data) {
 
     }
 
+    contenido += "</table>";
+
+    container.innerHTML = contenido;
 
 
-    tabla.innerHTML = contenido;
-
-    var buttonAdd = "<input type='button' id='BtnAdd' value='Add' class='btn btn-success mb-5' onclick='AbrirModal()'/>";
-    var ButtonAdd = document.getElementById("ButtonAdd");
-    ButtonAdd.innerHTML = buttonAdd;
 }
 
 
@@ -93,7 +103,7 @@ function Table(arrayColumnas, data) {
 
 var add = function (urlAdd, urlList, parameters, arrayColumnas) {
 
-    console.log(parameters);
+    var datos;
 
     $.ajax({
         method: "POST",
@@ -103,8 +113,8 @@ var add = function (urlAdd, urlList, parameters, arrayColumnas) {
         contentType: false,
         dataType: "json",
 
-
         success: function (data) {
+            datos = data;
 
             if (data == 1) {
                 alert(GuardadoCorrectamente);
@@ -115,9 +125,11 @@ var add = function (urlAdd, urlList, parameters, arrayColumnas) {
             Limpiar();
             CerrarModal();
 
+           
         },
-        error: function () {
-            console.log("No se ha podido obtener la información");
+        error: function (xhr, status, error) {
+            var err = JSON.parse(xhr.responseText);
+            alert(err.Message);
         }
     });
 
@@ -139,45 +151,27 @@ function Limpiar() {
 
 
 
-//function RecuperarInfo() {
-
-//    var valores = "";
-
-//    // vamos al elemento padre (<tr>) y buscamos todos los elementos <td>
-//    // que contenga el elemento padre
-//    var rowCol = document.getElementById("BtnEditar").parentNode.parentNode;
-
-//    //// recorremos cada uno de los elementos del array de elementos <td>
-//    //for (let i = 0; i < rowCol.length; i++) {
-
-//    //    // obtenemos cada uno de los valores y los ponemos en la variable "valores"
-//    //    valores += elementosTD[i].innerHTML + "\n";
-//    //}
-
-//    //alert(valores);
-
-    
-//    console.log(rowCol);
-//}
-
-
-
-var filter = function (url, parameters) {
+var filter = function (url, parameters, llenarModal , llenarTable, campos) {
 
     $.ajax({
-        method: "GET",
+        method: "POST",
         url: url,
         data: parameters, /*parámetros enviados al controlador*/
         processData: false,
         contentType: false,
         dataType: "json",
 
+
         success: function (data) {
 
-            if (data != null) {
-                LlenarModal(data);
+            if (data != null && llenarModal == true) {
+                LlenarModal(data, campos);
+                AbrirModal();
             }
-            
+
+            if (data != null && llenarTable == true) {
+                Table(arrayColumnas, data);
+            }
         },
         error: function () {
             console.log("No se ha podido obtener la información");
@@ -187,8 +181,36 @@ var filter = function (url, parameters) {
 }
 
 
-function LlenarModal(data) {
+function LlenarModal(data, campos) {
 
-    $("#ID").val(data.ID);
-    $("#NOMBRE").val(data.NOMBRE);
+    //obtenemos los keys del JSON ejemplo: ID, NOMBRE...
+    var keys = Object.keys(data[0]);
+
+    for (row = 0; row < data.length; row++) {
+
+        //recorremos los campos que vamos a pintar en el modal
+        for (columna = 0; columna < campos.length; columna++) {
+
+            //recorremos las keys
+            for (o = 0; o < keys.length; o++) {
+
+                if (keys[o] == campos[columna]) {
+
+                    //celda actual
+                    var celda = campos[columna];
+
+                    //obtenemos el valor de la celda
+                    var value = data[row][celda];
+
+                    //agregamos el valor obtenido al control mediante jquery el nombre del ID debe ser igual que la celda
+                    $("#"+celda).val(value);
+                 
+                }
+
+            }
+
+        }
+
+    }
+
 }

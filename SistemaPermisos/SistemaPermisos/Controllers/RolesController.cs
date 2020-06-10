@@ -1,6 +1,7 @@
 ﻿using SistemaPermisos.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -31,8 +32,7 @@ namespace SistemaPermisos.Controllers
                         ).ToList();
 
 
-                //object[] array = roles.ToArray();
-                //object json = new { vegeta = array };
+              
                 return Json(roles, JsonRequestBehavior.AllowGet);
             }
            
@@ -40,6 +40,7 @@ namespace SistemaPermisos.Controllers
 
 
 
+        [HttpPost]
         public JsonResult Filter(ROL rol)
         {
 
@@ -54,7 +55,7 @@ namespace SistemaPermisos.Controllers
                              }
                         ).ToList();
 
-
+              
                 return Json(roles, JsonRequestBehavior.AllowGet);
             }
 
@@ -77,8 +78,7 @@ namespace SistemaPermisos.Controllers
 
                     if (rol.ID == 0)
                     {
-                        //nuevo
-
+                        //AGREGAR
                         rol.FECHA_ALTA = DateTime.Now;
                         rol.ACTIVO = true;
                         bd.ROL.Add(rol);
@@ -88,16 +88,20 @@ namespace SistemaPermisos.Controllers
                     }
                     else
                     {
-                        bd.ROL.Add(rol);
-                        bd.Entry(rol).State = System.Data.Entity.EntityState.Modified;
+                        //EDITAR
+                        var o = bd.ROL.ToList().Find(r => r.ID == rol.ID);
+                        o.NOMBRE = rol.NOMBRE;
+                        bd.ROL.Add(o);
+                        bd.Entry(o).State = EntityState.Modified;
                         bd.SaveChanges();
                         nfilasAfectadas = 1;
                     }
 
                 }
             }
-            catch (Exception)
+            catch (Exception EX)
             {
+                var AJAS =EX.ToString();
                 return nfilasAfectadas;
             }
 
