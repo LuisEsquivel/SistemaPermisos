@@ -1,7 +1,10 @@
 ﻿
 
+
+
+
 document.addEventListener("DOMContentLoaded", function (event) {
-    window.listar("/Roles/List", ["ID", "NOMBRE"]);
+    window.listar("/Usuarios/List", ["ID", "NOMBRE"]);
 });
 
 
@@ -12,8 +15,8 @@ function Add() {
     form.append("ID", $("#ID").val());
     form.append("NOMBRE", $("#NOMBRE").val());
 
-    window.add("/Roles/Add", form, ["ID", "NOMBRE"]);
-   
+    window.add("/Usuarios/Add", form, ["ID", "NOMBRE"]);
+
 }
 
 
@@ -22,12 +25,12 @@ function RecuperarInfo(id) {
 
     form.append("ID", id);
 
-    window.filter("/Roles/Filter", form, true, false, ["ID", "NOMBRE"]);
+    window.filter("/Usuarios/Filter", form, true, false, ["ID", "NOMBRE", "SELECT_VALUE_ROL", "SELECT_NOMBRE_ROL"]);
 }
 
 
 function EliminarInfo(id) {
 
-    window.Delete("/Roles/Delete", id, ["ID", "NOMBRE"]);
+    window.Delete("/Usuarios/Delete", id, ["ID", "NOMBRE"]);
 
 }

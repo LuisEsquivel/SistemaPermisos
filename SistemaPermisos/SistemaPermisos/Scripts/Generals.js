@@ -1,6 +1,9 @@
 ﻿
 var ErrorAlGuardar = "Ocurrió un error al guardar";
 var GuardadoCorrectamente = "Se guardó correctamente";
+var SeEliminoCorrectamente = "Se eliminó correctamente";
+var ErrorAlEliminar = "Ocurrió un error al eliminar";
+
 
 
 
@@ -42,6 +45,8 @@ function Table(arrayColumnas, data) {
 
     contenido += "<table class='table mt-5'>";
 
+
+    contenido += "<thead class='bg-dark text-white'>";
     contenido += "<tr>";
 
     for (i = 0; i < arrayColumnas.length; i++) {
@@ -50,14 +55,15 @@ function Table(arrayColumnas, data) {
         contenido += "</th>";
     }
 
-    contenido += "<th> Acciones </th>" ;
+    contenido += "<th class='text-center'> Acciones </th>" ;
 
     contenido += "</tr>";
-
+    contenido += "</thead>";
  
   
     var id;
 
+    contenido += "<tbody>";
     for (row = 0; row < data.length; row++) {
 
         contenido += "<tr>";
@@ -66,6 +72,7 @@ function Table(arrayColumnas, data) {
 
             var cell = arrayColumnas[celda];
 
+       
             contenido += "<td>";
             contenido += data[row][cell];
             contenido += "</td>";
@@ -81,9 +88,9 @@ function Table(arrayColumnas, data) {
 
 
  
-        contenido += "<td>";
-        contenido += "<button id='BtnEditar' class='editar btn btn-info btn-sm pb-5 style='height:30px' onclick='RecuperarInfo("+id+");'>  <i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
-        contenido += "<button class='eliminar btn btn-danger btn-sm pb-5 pr-5' style='height:30px' '> <i class='fa fa-trash' aria-hidden='true'></i></button>";
+        contenido += "<td class='text-center'>";
+        contenido += "<button id='BtnEditar' class='editar btn btn-info btn-sm  style='height:30px' onclick='RecuperarInfo("+id+");'>  <i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
+        contenido += "<button class='eliminar btn btn-danger btn-sm ml-5' style='height:30px' onclick='EliminarInfo(" + id +");'> <i class='fa fa-trash' aria-hidden='true'></i></button>";
         contenido += "</td>";
 
 
@@ -91,6 +98,7 @@ function Table(arrayColumnas, data) {
 
     }
 
+    contenido += "</tbody>";
     contenido += "</table>";
 
     container.innerHTML = contenido;
@@ -101,9 +109,8 @@ function Table(arrayColumnas, data) {
 
 
 
-var add = function (urlAdd, urlList, parameters, arrayColumnas) {
+var add = function (urlAdd, parameters, arrayColumnas) {
 
-    var datos;
 
     $.ajax({
         method: "POST",
@@ -116,16 +123,18 @@ var add = function (urlAdd, urlList, parameters, arrayColumnas) {
         success: function (data) {
             datos = data;
 
-            if (data == 1) {
+            if (data != null) {
                 alert(GuardadoCorrectamente);
+
+                Table(arrayColumnas, data);
+                Limpiar();
+                CerrarModal();
+
             } else {
                 alert(ErrorAlGuardar);
             }
-            listar(urlList, arrayColumnas, data);
-            Limpiar();
-            CerrarModal();
 
-           
+     
         },
         error: function (xhr, status, error) {
             var err = JSON.parse(xhr.responseText);
@@ -151,7 +160,7 @@ function Limpiar() {
 
 
 
-var filter = function (url, parameters, llenarModal , llenarTable, campos) {
+var filter = function (url, parameters, llenarModal, llenarTable, campos) {
 
     $.ajax({
         method: "POST",
@@ -183,6 +192,11 @@ var filter = function (url, parameters, llenarModal , llenarTable, campos) {
 
 function LlenarModal(data, campos) {
 
+    //para llenar DropDown
+    var array = new Array();
+    var idDropdown;
+
+
     //obtenemos los keys del JSON ejemplo: ID, NOMBRE...
     var keys = Object.keys(data[0]);
 
@@ -202,9 +216,29 @@ function LlenarModal(data, campos) {
                     //obtenemos el valor de la celda
                     var value = data[row][celda];
 
+
+
                     //agregamos el valor obtenido al control mediante jquery el nombre del ID debe ser igual que la celda
-                    $("#"+celda).val(value);
-                 
+
+                    if (celda.includes("SELECT_VALUE")) {
+                        array[0] = value;
+                        idDropdown = celda;
+                    }
+                    if (celda.includes("SELECT_DISPLAY")) {
+                        array[1] = value;
+                    }
+
+                    if (array.length != null && array.length ==2) {
+                        var contenido = "";
+                        contenido += "<option value" + array[0] + ">" + array[1] + "</option>";
+                        $("#" + idDropdown).innerHTML(contenido);
+                        idDropdown = "";
+                        array = null;
+                    }
+
+                        $("#" + celda).val(value);
+                    
+          
                 }
 
             }
@@ -214,3 +248,51 @@ function LlenarModal(data, campos) {
     }
 
 }
+
+
+
+function Delete(urlDelete, id, arrayColumnas) {
+
+
+    if (confirm("Desea eliminar el registro con ID: " + id)) {
+
+        var parametros = {
+            "id": id,
+        };
+
+        $.ajax({
+            method: "POST",
+            url: urlDelete,
+            data: parametros, /*parámetros enviados al controlador*/      
+            dataType: "json",
+
+            success: function (data) {
+                datos = data;
+
+                if (data != null) {
+
+                    alert(SeEliminoCorrectamente);
+                    Table(arrayColumnas, data);
+                    Limpiar();
+                    CerrarModal();
+
+
+                } else {
+                    alert(ErrorAlEliminar);
+                }
+
+              
+
+
+            },
+            error: function (xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                alert(err.Message);
+            }
+        });
+
+    }
+
+}
+
+
