@@ -6,7 +6,6 @@ var ErrorAlEliminar = "Ocurrió un error al eliminar";
 
 
 
-
 var listar = function (url, arrayColumnas, parameters) {
 
     $.ajax({
@@ -46,7 +45,7 @@ function Table(arrayColumnas, data) {
         container.innerHTML = contenido;
     }
 
-    contenido += "<table class='table mt-5'>";
+    contenido += "<table class='table mt-5' id='Table'>";
     contenido += "<thead class='bg-dark text-white'>";
     contenido += "<tr>";
 
@@ -91,7 +90,7 @@ function Table(arrayColumnas, data) {
  
         contenido += "<td class='text-center'>";
         contenido += "<button id='BtnEditar' class='editar btn btn-info btn-sm  style='height:30px' onclick='RecuperarInfo("+id+");'>  <i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
-        contenido += "<button class='eliminar btn btn-danger btn-sm ml-5' style='height:30px' onclick='EliminarInfo(" + id +");'> <i class='fa fa-trash' aria-hidden='true'></i></button>";
+        contenido += "<button class='eliminar btn btn-danger btn-sm ml-2' style='height:30px' onclick='EliminarInfo(" + id +");'> <i class='fa fa-trash' aria-hidden='true'></i></button>";
         contenido += "</td>";
 
 
@@ -104,7 +103,15 @@ function Table(arrayColumnas, data) {
 
     container.innerHTML = contenido;
 
-
+    $('#Table').DataTable({
+        lengthMenu: [
+            [7, 14, 21, -1],
+            ['7 rows', '14 rows', '21 rows', 'Todo']
+        ],
+        buttons: [
+            'pageLength'
+        ]
+    });
 }
 
 

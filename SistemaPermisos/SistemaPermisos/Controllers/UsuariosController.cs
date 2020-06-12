@@ -29,6 +29,7 @@ namespace SistemaPermisos.Controllers
             {
                 var o = (from x in bd.USUARIO
                          where x.ACTIVO == true
+                         orderby x.ID descending
                          select new
                          {
                              x.ID,
@@ -55,13 +56,14 @@ namespace SistemaPermisos.Controllers
             {
                 var o = (from x in bd.USUARIO   
                          where x.ACTIVO == true && x.ID == user.ID
+                         orderby x.ID descending
                          select new
                              {
                                  x.ID,
                                  x.NOMBRE,
                                  VALUE_ROL = x.ID_ROL
                              }
-                        ).ToList();
+                        ).ToList().OrderByDescending(p=>p.ID);
 
 
                 return Json(o, JsonRequestBehavior.AllowGet);

@@ -35,7 +35,7 @@ namespace SistemaPermisos.Controllers
                     DISPLAY_ROL = p.NOMBRE
                 }
 
-                ).ToList().Where(r=> r.ACTIVO==true).ToList();
+                ).ToList().Where(r=> r.ACTIVO==true).ToList().OrderByDescending(p => p.ID); ;
 
 
             return Json(roles, JsonRequestBehavior.AllowGet);
@@ -58,7 +58,7 @@ namespace SistemaPermisos.Controllers
                                  r.ID,
                                  r.NOMBRE
                              }
-                        ).ToList();
+                        ).ToList().OrderByDescending(p => p.ID); ;
 
               
                 return Json(roles, JsonRequestBehavior.AllowGet);
