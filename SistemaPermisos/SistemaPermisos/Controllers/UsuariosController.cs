@@ -10,10 +10,16 @@ namespace SistemaPermisos.Controllers
 {
     public class UsuariosController : Controller
     {
+        private readonly Repository<USUARIO> _repository;
+        private readonly Repository<ROL> _roles;
         RolesController r;
-        public UsuariosController()
+
+
+        public UsuariosController(Repository<USUARIO> repositoriy)
         {
-            r = new RolesController();
+            _repository = repositoriy;
+            r = new RolesController(_roles);
+
         }
 
         public ActionResult Index()

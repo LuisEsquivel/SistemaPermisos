@@ -11,6 +11,14 @@ namespace SistemaPermisos.Controllers
     public class RolesController : Controller
     {
 
+        private readonly Repository<ROL> _repository;
+
+
+        public RolesController(Repository<ROL> repositoriy)
+        {
+            _repository = repositoriy;
+        }
+
 
         // GET: Roles
         public ActionResult Index()
@@ -21,24 +29,52 @@ namespace SistemaPermisos.Controllers
         public JsonResult List()
         {
 
-            var bd = new ApplicationDbContext();
+            object o = null;
 
-            var roles = bd.ROL.Select(
+            //var bd = new ApplicationDbContext();
 
-                p => new
-                {
-                    p.ID,
-                    p.NOMBRE,
-                    p.ACTIVO,
+            //var roles = bd.ROL.Select(
 
-                    VALUE_ROL = p.ID,
-                    DISPLAY_ROL = p.NOMBRE
-                }
+            //    p => new
+            //    {
+            //        p.ID,
+            //        p.NOMBRE,
+            //        p.ACTIVO,
 
-                ).ToList().Where(r=> r.ACTIVO==true).ToList().OrderByDescending(p => p.ID); ;
+            //        VALUE_ROL = p.ID,
+            //        DISPLAY_ROL = p.NOMBRE
+            //    }
+
+            //    ).ToList().Where(r=> r.ACTIVO==true).ToList().OrderByDescending(p => p.ID); ;
 
 
-            return Json(roles, JsonRequestBehavior.AllowGet);
+
+
+            try
+            {
+
+                o = _repository.ListAll();
+                List<ROL> rol = new List<ROL>();
+                rol = (List<ROL>)o;
+
+                o = rol.Select(
+                    p => new
+                    {
+                        p.ID,
+                        p.NOMBRE,
+                        p.ACTIVO,
+
+                        VALUE_ROL = p.ID,
+                        DISPLAY_ROL = p.NOMBRE
+                    }
+                    ).ToList().Where(r => r.ACTIVO == true).ToList();
+  
+            } catch (Exception)
+            {
+                o = null;
+            }
+
+            return Json(o, JsonRequestBehavior.AllowGet);
       
 
         }
