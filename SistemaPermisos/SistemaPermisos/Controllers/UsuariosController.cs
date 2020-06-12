@@ -10,15 +10,15 @@ namespace SistemaPermisos.Controllers
 {
     public class UsuariosController : Controller
     {
-        private readonly Repository<USUARIO> _repository;
-        private readonly Repository<ROL> _roles;
+
+        Repository<USUARIO> _repository;
         RolesController r;
 
 
-        public UsuariosController(Repository<USUARIO> repositoriy)
+        public UsuariosController(Repository<USUARIO> repository)
         {
-            _repository = repositoriy;
-            r = new RolesController(_roles);
+            _repository = repository;
+            r = new RolesController(null);
 
         }
 
@@ -160,4 +160,5 @@ namespace SistemaPermisos.Controllers
 
 
     }
+
 }

@@ -11,11 +11,10 @@ namespace SistemaPermisos.Controllers
     public class RolesController : Controller
     {
 
-        private readonly Repository<ROL> _repository;
-
+        Repository<ROL> _repository;
 
         public RolesController(Repository<ROL> repositoriy)
-        {
+        { 
             _repository = repositoriy;
         }
 
@@ -30,25 +29,6 @@ namespace SistemaPermisos.Controllers
         {
 
             object o = null;
-
-            //var bd = new ApplicationDbContext();
-
-            //var roles = bd.ROL.Select(
-
-            //    p => new
-            //    {
-            //        p.ID,
-            //        p.NOMBRE,
-            //        p.ACTIVO,
-
-            //        VALUE_ROL = p.ID,
-            //        DISPLAY_ROL = p.NOMBRE
-            //    }
-
-            //    ).ToList().Where(r=> r.ACTIVO==true).ToList().OrderByDescending(p => p.ID); ;
-
-
-
 
             try
             {
