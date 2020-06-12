@@ -18,9 +18,9 @@ var listar = function (url, arrayColumnas, parameters) {
 
         success: function (data) {
 
-                window.Table(arrayColumnas, data);
-  
-
+            LlenarCombos(data);
+            window.Table(arrayColumnas, data);
+            
         },
         error: function () {
             console.log("No se ha podido obtener la información");
@@ -41,11 +41,13 @@ function Table(arrayColumnas, data) {
     container.classList.add("container");
     var contenido = "";
 
-    contenido += "<input type='button' id='BtnAdd' value='Add' class='btn btn-success' onclick='AbrirModal()'/>";
+    contenido += "<input type='button' id='BtnAdd' value='Add' class='btn btn-success' onclick='return AbrirModal(true);'/>";
+
+    if (data == null) {
+        container.innerHTML = contenido;
+    }
 
     contenido += "<table class='table mt-5'>";
-
-
     contenido += "<thead class='bg-dark text-white'>";
     contenido += "<tr>";
 
@@ -146,8 +148,20 @@ var add = function (urlAdd, parameters, arrayColumnas) {
 
 
 
-function AbrirModal() {
-    $("#modal").modal("show");
+function AbrirModal(operacion) {
+
+    if (operacion == true) {
+        Limpiar();
+        $("#modal").modal("show");
+        operacion = null;
+    }
+
+    if (operacion == null) {
+        $("#modal").modal("show");
+    }
+
+
+  
 }
 
 function CerrarModal() {
@@ -174,7 +188,7 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos) {
         success: function (data) {
 
             if (data != null && llenarModal == true) {
-                LlenarModal(data, campos);
+                LlenarModal(data, campos);                
                 AbrirModal();
             }
 
@@ -192,11 +206,6 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos) {
 
 function LlenarModal(data, campos) {
 
-    //para llenar DropDown
-    var array = new Array();
-    var idDropdown;
-
-
     //obtenemos los keys del JSON ejemplo: ID, NOMBRE...
     var keys = Object.keys(data[0]);
 
@@ -212,41 +221,97 @@ function LlenarModal(data, campos) {
 
                     //celda actual
                     var celda = campos[columna];
-
+                   
                     //obtenemos el valor de la celda
                     var value = data[row][celda];
 
 
 
                     //agregamos el valor obtenido al control mediante jquery el nombre del ID debe ser igual que la celda
-
-                    if (celda.includes("SELECT_VALUE")) {
-                        array[0] = value;
-                        idDropdown = celda;
-                    }
-                    if (celda.includes("SELECT_DISPLAY")) {
-                        array[1] = value;
-                    }
-
-                    if (array.length != null && array.length ==2) {
-                        var contenido = "";
-                        contenido += "<option value" + array[0] + ">" + array[1] + "</option>";
-                        $("#" + idDropdown).innerHTML(contenido);
-                        idDropdown = "";
-                        array = null;
-                    }
-
-                        $("#" + celda).val(value);
+                    $("#" + celda).val(value);
                     
           
-                }
+                }//end if
 
-            }
+            }//end for keys
 
-        }
+        }// end for columna
 
     }
 
+}
+
+
+var FillCombos = function (url) {
+
+    $.ajax({
+        method: "POST",
+        url: url,
+        data: parameters, /*parámetros enviados al controlador*/
+        processData: false,
+        contentType: false,
+        dataType: "json",
+
+
+        success: function (data) {
+
+                LlenarCombos(data);
+
+        },
+        error: function () {
+            console.log("No se ha podido obtener la información");
+        }
+    });
+
+}
+
+
+function LlenarCombos(data, value) {
+
+    //para llenar DropDown
+    var array = new Array();
+    var idDropdown;
+
+    var contenido = "";
+    contenido += "<option value=" + "" + ">--CHOOSE--</option>";
+
+
+
+    //obtenemos los keys del JSON ejemplo: ID, NOMBRE...
+    var keys = Object.keys(data[0]);
+
+    for (row = 0; row < data.length; row++) {
+
+
+        //FILL DROPDOWNS
+
+        for (k = 0; k < keys.length; k++) {
+
+            var keyName = keys[k];
+
+            var value = data[row][keyName];
+
+            if (keyName.includes("VALUE")) {
+                array[0] = value;
+                idDropdown = keyName;
+            }
+            if (keyName.includes("DISPLAY")) {
+                array[1] = value;
+            }
+
+            if (array.length != null && array.length == 2) {
+
+                contenido += "<option value=" + array[0] + ">" + array[1] + "</option>";
+                var dropDown = document.getElementById(idDropdown);
+                dropDown.innerHTML = contenido;
+                idDropdown = "";
+                array = new Array();
+
+            }
+
+        }//end for keys dropdown
+
+    }
 }
 
 

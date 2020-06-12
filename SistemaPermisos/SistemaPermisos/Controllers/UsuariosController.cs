@@ -10,6 +10,11 @@ namespace SistemaPermisos.Controllers
 {
     public class UsuariosController : Controller
     {
+        RolesController r;
+        public UsuariosController()
+        {
+            r = new RolesController();
+        }
 
         public ActionResult Index()
         {
@@ -20,35 +25,24 @@ namespace SistemaPermisos.Controllers
         public JsonResult List()
         {
 
-            var bd = new ApplicationDbContext();
-
-            var o = bd.USUARIO.Select(
-
-                p => new
-                {
-                    p.ID,
-                    p.NOMBRE,
-                    p.ACTIVO
-                }
-
-                ).ToList().Where(r => r.ACTIVO == true);
-
-
-            //using (var bd = new ApplicationDbContext())
-            //{
-            //    var roles = (from r in bd.ROL
-            //                 where r.ACTIVO == true
-            //                 select new
-            //                 {
-            //                     r.ID,
-            //                     r.NOMBRE
-            //                 }
-            //            ).ToList();
+            using (var bd = new ApplicationDbContext())
+            {
+                var o = (from x in bd.USUARIO
+                         join r in bd.ROL
+                         on x.ID_ROL equals r.ID
+                         where x.ACTIVO == true
+                         select new
+                         {
+                             x.ID,
+                             x.NOMBRE,
+                             VALUE = r.ID,
+                             DISPLAY = r.NOMBRE
+                         }
+                        ).ToList();
 
 
-
-            return Json(o, JsonRequestBehavior.AllowGet);
-            //}
+                return Json(o, JsonRequestBehavior.AllowGet);
+            }
 
         }
 
@@ -70,8 +64,8 @@ namespace SistemaPermisos.Controllers
                              {
                                  x.ID,
                                  x.NOMBRE,
-                                 SELECT_VALUE_ROL = r.ID,
-                                 SELECT_DISPLAY_ROL = r.NOMBRE
+                                 VALUE = r.ID,
+                                 DISPLAY = r.NOMBRE
                              }
                         ).ToList();
 
@@ -81,6 +75,14 @@ namespace SistemaPermisos.Controllers
 
         }
 
+
+
+
+        [HttpPost]
+        public JsonResult FillCombos()
+        {
+           return r.List();
+        }
 
 
 
@@ -107,10 +109,11 @@ namespace SistemaPermisos.Controllers
                     else
                     {
                         //EDITAR
-                        var o = bd.ROL.ToList().Find(r => r.ID == u.ID);
+                        var o = bd.USUARIO.ToList().Find(r => r.ID == u.ID);
                         o.NOMBRE = u.NOMBRE;
+                        o.ID_ROL = u.ID_ROL;
                         o.FECHA_MOD = DateTime.Now;
-                        bd.ROL.Add(o);
+                        bd.USUARIO.Add(o);
                         bd.Entry(o).State = EntityState.Modified;
                         bd.SaveChanges();
 

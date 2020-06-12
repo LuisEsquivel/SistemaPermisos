@@ -42,23 +42,27 @@
                         <input type="text" class="form-control" id="NOMBRE" name="NOMBRE" required>
                     </div>
 
-                    <div class="col-sm">
-                        <label for="ROL">Rol</label>
-                        <select type="text" class="form-control dropdown" id="SELECT_VALUE_ROL" name="ROL" required style="height:34PX;">
-                            <option value="">
-                                --seleccione--
-                            </option>
-                        </select>
-                    </div>
-
                 </form>
 
+
+                <form class="form-row">
+                    <div class="col-sm-6">
+                        <label for="ROL">Rol</label>
+                        <select type="text" class="form-control dropdown" id="VALUE" name="ID_ROL" required style="height:34PX;"></select>
+                    </div>
+                </form>
+
+
+
+                <div class="col-sm mt-5 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary mr-3" id="BtnEnviar" onclick="Add()">Enviar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+
+
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="BtnEnviar" onclick="Add()">Enviar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            </div>
+
         </div>
     </div>
 </div>

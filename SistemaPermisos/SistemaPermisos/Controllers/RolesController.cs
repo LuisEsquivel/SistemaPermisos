@@ -29,10 +29,13 @@ namespace SistemaPermisos.Controllers
                 {
                     p.ID,
                     p.NOMBRE,
-                    p.ACTIVO
+                    p.ACTIVO,
+
+                    VALUE = p.ID,
+                    DISPLAY = p.NOMBRE
                 }
 
-                ).ToList().Where(r=> r.ACTIVO==true);
+                ).ToList().Where(r=> r.ACTIVO==true).ToList();
 
             
             //using (var bd = new ApplicationDbContext())
