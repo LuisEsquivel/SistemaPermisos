@@ -31,28 +31,15 @@ namespace SistemaPermisos.Controllers
                     p.NOMBRE,
                     p.ACTIVO,
 
-                    VALUE = p.ID,
-                    DISPLAY = p.NOMBRE
+                    VALUE_ROL = p.ID,
+                    DISPLAY_ROL = p.NOMBRE
                 }
 
                 ).ToList().Where(r=> r.ACTIVO==true).ToList();
 
-            
-            //using (var bd = new ApplicationDbContext())
-            //{
-            //    var roles = (from r in bd.ROL
-            //                 where r.ACTIVO == true
-            //                 select new
-            //                 {
-            //                     r.ID,
-            //                     r.NOMBRE
-            //                 }
-            //            ).ToList();
-
-
 
             return Json(roles, JsonRequestBehavior.AllowGet);
-            //}
+      
 
         }
 

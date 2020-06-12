@@ -18,7 +18,6 @@ var listar = function (url, arrayColumnas, parameters) {
 
         success: function (data) {
 
-            LlenarCombos(data);
             window.Table(arrayColumnas, data);
             
         },
@@ -123,11 +122,9 @@ var add = function (urlAdd, parameters, arrayColumnas) {
         dataType: "json",
 
         success: function (data) {
-            datos = data;
 
             if (data != null) {
                 alert(GuardadoCorrectamente);
-
                 Table(arrayColumnas, data);
                 Limpiar();
                 CerrarModal();
@@ -150,13 +147,16 @@ var add = function (urlAdd, parameters, arrayColumnas) {
 
 function AbrirModal(operacion) {
 
+
     if (operacion == true) {
         Limpiar();
+        $(".modal-title").text("Agregar " + $("#Title").text());
         $("#modal").modal("show");
         operacion = null;
     }
 
     if (operacion == null) {
+        $(".modal-title").text("Editar " + $("#Title").text());
         $("#modal").modal("show");
     }
 
@@ -174,7 +174,7 @@ function Limpiar() {
 
 
 
-var filter = function (url, parameters, llenarModal, llenarTable, campos) {
+var filter = function (url, parameters, llenarModal, llenarTable, campos, selectedCombos) {
 
     $.ajax({
         method: "POST",
@@ -188,7 +188,12 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos) {
         success: function (data) {
 
             if (data != null && llenarModal == true) {
-                LlenarModal(data, campos);                
+                LlenarModal(data, campos);
+
+                if (selectedCombos == true) {
+                    LlenarCombos(null, data);
+                }
+
                 AbrirModal();
             }
 
@@ -242,20 +247,18 @@ function LlenarModal(data, campos) {
 }
 
 
-var FillCombos = function (url) {
+var LoadCombos= function (url) {
+
 
     $.ajax({
         method: "POST",
         url: url,
-        data: parameters, /*parámetros enviados al controlador*/
-        processData: false,
-        contentType: false,
         dataType: "json",
 
 
         success: function (data) {
 
-                LlenarCombos(data);
+            LlenarCombos(data, null);
 
         },
         error: function () {
@@ -266,18 +269,27 @@ var FillCombos = function (url) {
 }
 
 
-function LlenarCombos(data, value) {
+function LlenarCombos(data, dataSelected) {
 
     //para llenar DropDown
     var array = new Array();
     var idDropdown;
+    var dropDown;
 
     var contenido = "";
-    contenido += "<option value=" + "" + ">--CHOOSE--</option>";
+    contenido += "<option value=" + "" + " >--CHOOSE--</option>";
 
 
+    var selected;
+    if (dataSelected != null) {
+        data = null;
+        data = dataSelected;
+        selected = true;
+    } else {
+        selected = false;
+    }
 
-    //obtenemos los keys del JSON ejemplo: ID, NOMBRE...
+
     var keys = Object.keys(data[0]);
 
     for (row = 0; row < data.length; row++) {
@@ -291,23 +303,34 @@ function LlenarCombos(data, value) {
 
             var value = data[row][keyName];
 
-            if (keyName.includes("VALUE")) {
-                array[0] = value;
-                idDropdown = keyName;
-            }
-            if (keyName.includes("DISPLAY")) {
-                array[1] = value;
+            
+            if (selected == true) {
+                if (keyName.includes("VALUE")) {
+                    var id = $("#" + keyName).val(value);
+                }
             }
 
-            if (array.length != null && array.length == 2) {
+            if (selected == false) {
 
-                contenido += "<option value=" + array[0] + ">" + array[1] + "</option>";
-                var dropDown = document.getElementById(idDropdown);
-                dropDown.innerHTML = contenido;
-                idDropdown = "";
-                array = new Array();
+                if (keyName.includes("VALUE")) {
+                    array[0] = value;
+                    idDropdown = keyName;
+                }
+                if (keyName.includes("DISPLAY")) {
+                    array[1] = value;
+                }
 
-            }
+                if (array.length != null && array.length == 2) {
+
+                    contenido += "<option value=" + array[0] + ">" + array[1] + "</option>";
+                    dropDown = document.getElementById(idDropdown);
+                    dropDown.innerHTML = contenido;
+                    idDropdown = "";
+                    array = new Array();
+
+                }
+
+            }//end else
 
         }//end for keys dropdown
 

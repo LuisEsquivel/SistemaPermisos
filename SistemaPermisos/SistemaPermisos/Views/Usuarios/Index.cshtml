@@ -9,7 +9,7 @@
 
 
 
-<h2>Usuarios</h2>
+<h2 id="Title">Usuarios</h2>
 
 
 
@@ -30,34 +30,39 @@
 
             <div class="modal-body">
 
-                <form class="form-row" id="form">
+                <form id="form">
 
-                    <div class="col-sm">
-                        <label for="ID">Id</label>
-                        <input type="text" class="form-control" id="ID" name="ID">
+
+                    <div class="row ml-2">
+                        <div class="col-sm-3">
+                            <label for="ID">Id</label>
+                            <input type="text" class="form-control" id="ID" name="ID" disabled>
+                        </div>
+
+                        <div class="col-sm-9">
+                            <label for="NOMBRE">Nombre</label>
+                            <input type="text" class="form-control" id="NOMBRE" name="NOMBRE" required>
+                        </div>
                     </div>
 
-                    <div class="col-sm">
-                        <label for="NOMBRE">Nombre</label>
-                        <input type="text" class="form-control" id="NOMBRE" name="NOMBRE" required>
+                    <div class="row ml-2">
+                        <div class="col-sm mt-3">
+                            <label for="ROL">Rol</label>
+                            <select type="text" class="form-control dropdown" id="VALUE_ROL" name="ID_ROL" required style="height:34PX;"></select>
+                        </div>
                     </div>
 
+               
+                    <div class="row mt-5 text-center">
+                        <div class="col-sm  ">
+                            <button type="button" class="btn btn-primary mr-3" id="BtnEnviar" onclick="Add()">Enviar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        </div>
+
+                    </div>
+
+   
                 </form>
-
-
-                <form class="form-row">
-                    <div class="col-sm-6">
-                        <label for="ROL">Rol</label>
-                        <select type="text" class="form-control dropdown" id="VALUE" name="ID_ROL" required style="height:34PX;"></select>
-                    </div>
-                </form>
-
-
-
-                <div class="col-sm mt-5 d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary mr-3" id="BtnEnviar" onclick="Add()">Enviar</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                </div>
 
 
             </div>

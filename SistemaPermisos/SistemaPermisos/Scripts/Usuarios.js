@@ -1,7 +1,8 @@
 ﻿
 
 document.addEventListener("DOMContentLoaded", function (event) {
-    window.listar("/Usuarios/List", ["ID", "NOMBRE"]);
+    window.LoadCombos("/Usuarios/FillCombos");
+    window.listar("/Usuarios/List", ["ID", "NOMBRE"], null, true);
 });
 
 
@@ -11,11 +12,10 @@ function Add() {
 
     form.append("ID", $("#ID").val());
     form.append("NOMBRE", $("#NOMBRE").val());
-    form.append("ID_ROL", $("#VALUE").val());
-    alert($("#VALUE").val());
+    form.append("ID_ROL", $("#VALUE_ROL").val());
 
     window.add("/Usuarios/Add", form, ["ID", "NOMBRE"]);
-
+    
 }
 
 
@@ -24,7 +24,7 @@ function RecuperarInfo(id) {
 
     form.append("ID", id);
 
-    window.filter("/Usuarios/Filter", form, true, false, ["ID", "NOMBRE", "SELECT_VALUE_ROL", "SELECT_NOMBRE_ROL"]);
+    window.filter("/Usuarios/Filter", form, true, false, ["ID", "NOMBRE"], true, true);
     
 }
 
@@ -36,7 +36,7 @@ function EliminarInfo(id) {
 }
 
 
-function FillCombos(id) {
+function SelectedCombos(id) {
     var form = new FormData();
 
     form.append("ID", id);

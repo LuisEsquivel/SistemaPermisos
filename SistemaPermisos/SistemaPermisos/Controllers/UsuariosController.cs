@@ -28,15 +28,12 @@ namespace SistemaPermisos.Controllers
             using (var bd = new ApplicationDbContext())
             {
                 var o = (from x in bd.USUARIO
-                         join r in bd.ROL
-                         on x.ID_ROL equals r.ID
                          where x.ACTIVO == true
                          select new
                          {
                              x.ID,
                              x.NOMBRE,
-                             VALUE = r.ID,
-                             DISPLAY = r.NOMBRE
+                             VALUE_ROL = x.ID_ROL
                          }
                         ).ToList();
 
@@ -56,16 +53,13 @@ namespace SistemaPermisos.Controllers
 
             using (var bd = new ApplicationDbContext())
             {
-                var o = (from x in bd.USUARIO
-                         join r in bd.ROL
-                         on x.ID_ROL equals r.ID
-                         where x.ID == user.ID
-                             select new
+                var o = (from x in bd.USUARIO   
+                         where x.ACTIVO == true && x.ID == user.ID
+                         select new
                              {
                                  x.ID,
                                  x.NOMBRE,
-                                 VALUE = r.ID,
-                                 DISPLAY = r.NOMBRE
+                                 VALUE_ROL = x.ID_ROL
                              }
                         ).ToList();
 
@@ -81,7 +75,7 @@ namespace SistemaPermisos.Controllers
         [HttpPost]
         public JsonResult FillCombos()
         {
-           return r.List();
+            return r.List();
         }
 
 

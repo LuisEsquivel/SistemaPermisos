@@ -2,6 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", function (event) {
     window.listar("/Roles/List", ["ID", "NOMBRE"]);
+    
 });
 
 
@@ -11,7 +12,6 @@ function Add() {
 
     form.append("ID", $("#ID").val());
     form.append("NOMBRE", $("#NOMBRE").val());
-
     window.add("/Roles/Add", form, ["ID", "NOMBRE"]);
    
 }
