@@ -1,4 +1,6 @@
-﻿using SistemaPermisos.Models;
+﻿using SistemaPermisos.Interface;
+using SistemaPermisos.Models;
+using SistemaPermisos.Repository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -11,11 +13,16 @@ namespace SistemaPermisos.Controllers
     public class RolesController : Controller
     {
 
-        Repository<ROL> _repository;
+        private IGenericRepository<ROL> repository = null;
 
-        public RolesController(Repository<ROL> repositoriy)
-        { 
-            _repository = repositoriy;
+        public RolesController()
+        {
+            this.repository = new GenericRepository<ROL>();
+        }
+
+        public RolesController(IGenericRepository<ROL> repository)
+        {
+            this.repository = repository;
         }
 
 
@@ -33,7 +40,7 @@ namespace SistemaPermisos.Controllers
             try
             {
 
-                o = _repository.ListAll();
+                o = repository.GetAll();
                 List<ROL> rol = new List<ROL>();
                 rol = (List<ROL>)o;
 

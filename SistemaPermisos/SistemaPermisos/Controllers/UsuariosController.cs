@@ -1,4 +1,6 @@
-﻿using SistemaPermisos.Models;
+﻿using SistemaPermisos.Interface;
+using SistemaPermisos.Models;
+using SistemaPermisos.Repository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -11,15 +13,18 @@ namespace SistemaPermisos.Controllers
     public class UsuariosController : Controller
     {
 
-        Repository<USUARIO> _repository;
-        RolesController r;
-
-
-        public UsuariosController(Repository<USUARIO> repository)
+        private IGenericRepository<USUARIO> repository = null;
+        private RolesController r;
+        
+        public UsuariosController()
         {
-            _repository = repository;
-            r = new RolesController(null);
+            this.repository = new GenericRepository<USUARIO>();
+            r = new RolesController();
+        }
 
+        public UsuariosController(IGenericRepository<USUARIO> repository)
+        {
+            this.repository = repository;
         }
 
         public ActionResult Index()
@@ -83,7 +88,7 @@ namespace SistemaPermisos.Controllers
         [HttpPost]
         public JsonResult FillCombos()
         {
-            return r.List();
+           return r.List();
         }
 
 

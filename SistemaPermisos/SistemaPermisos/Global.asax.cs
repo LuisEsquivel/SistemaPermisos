@@ -18,7 +18,7 @@ namespace SistemaPermisos
         {
 
             /// Add call
-            RegisterAutofac();
+            //RegisterAutofac();
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -26,24 +26,24 @@ namespace SistemaPermisos
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        private void RegisterAutofac()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterControllers(Assembly.GetExecutingAssembly());
-            builder.RegisterSource(new ViewRegistrationSource());
+        //private void RegisterAutofac()
+        //{
+        //    var builder = new ContainerBuilder();
+        //    builder.RegisterControllers(Assembly.GetExecutingAssembly());
+        //    builder.RegisterSource(new ViewRegistrationSource());
 
-            // manual registration of types;
-            Repository<ROL> rol = new Repository<ROL>(() => new ApplicationDbContext());
-            builder.Register< Repository<ROL>> (a => rol);
+        //    // manual registration of types;
+        //    Repository<ROL> rol = new Repository<ROL>(() => new ApplicationDbContext());
+        //    builder.Register< Repository<ROL>> (a => rol);
 
-            Repository<USUARIO> user = new Repository<USUARIO>(() => new ApplicationDbContext());
-            builder.Register<Repository<USUARIO>>(a => user);
+        //    Repository<USUARIO> user = new Repository<USUARIO>(() => new ApplicationDbContext());
+        //    builder.Register<Repository<USUARIO>>(a => user);
 
 
-            var container = builder.Build();
+        //    var container = builder.Build();
 
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-        }
+        //    DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+        //}
 
     }
 }
