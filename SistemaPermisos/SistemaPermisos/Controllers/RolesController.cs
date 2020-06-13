@@ -40,22 +40,20 @@ namespace SistemaPermisos.Controllers
             try
             {
 
-                o = repository.GetAll();
-                List<ROL> rol = new List<ROL>();
-                rol = (List<ROL>)o;
-
-                o = rol.Select(
-                    p => new
+                o = repository.GetAll().Select(
+                    x=> new
                     {
-                        p.ID,
-                        p.NOMBRE,
-                        p.ACTIVO,
+                        x.ID,
+                        x.NOMBRE,
+                        x.ACTIVO,
 
-                        VALUE_ROL = p.ID,
-                        DISPLAY_ROL = p.NOMBRE
+                        VALUE_ROL = x.ID,
+                        DISPLAY_ROL = x.NOMBRE
+
                     }
-                    ).ToList().Where(r => r.ACTIVO == true).ToList();
-  
+                    ).ToList().Where(p=> p.ACTIVO == true).ToList();
+
+ 
             } catch (Exception)
             {
                 o = null;
@@ -72,21 +70,9 @@ namespace SistemaPermisos.Controllers
         public JsonResult Filter(ROL rol)
         {
 
-            using (var bd = new ApplicationDbContext())
-            {
-                var roles = (from r in bd.ROL
-                             where r.ID == rol.ID
-                             select new
-                             {
-                                 r.ID,
-                                 r.NOMBRE
-                             }
-                        ).ToList().OrderByDescending(p => p.ID); ;
-
-              
-                return Json(roles, JsonRequestBehavior.AllowGet);
-            }
-
+            var roles = repository.GetAll().Where(x=> x.ID == rol.ID).ToList(); 
+            return Json(roles, JsonRequestBehavior.AllowGet);
+   
         }
 
 
@@ -96,34 +82,28 @@ namespace SistemaPermisos.Controllers
         public JsonResult Add(ROL rol)
         {
 
-
             try
             {
-
-                using (var bd = new ApplicationDbContext())
-                {
 
                     if (rol.ID == 0)
                     {
                         //AGREGAR
                         rol.FECHA_ALTA = DateTime.Now;
                         rol.ACTIVO = true;
-                        bd.ROL.Add(rol);
-                        bd.SaveChanges();
+                        repository.Add(rol);
+                        repository.Save();
 
                     }
                     else
                     {
-                        //EDITAR
-                        var o = bd.ROL.ToList().Find(r => r.ID == rol.ID);
+                    //EDITAR
+                        var o = repository.GetAll().Where(x=> x.ID == rol.ID).First();
                         o.NOMBRE = rol.NOMBRE;
-                        bd.ROL.Add(o);
-                        bd.Entry(o).State = EntityState.Modified;
-                        bd.SaveChanges();
+                        repository.Update(o);
+                        repository.Save();
 
                     }
-
-                }
+                
             }
             catch (Exception EX)
             {
@@ -143,12 +123,10 @@ namespace SistemaPermisos.Controllers
 
                 if(id > 0)
                 {
-                    using (var bd = new ApplicationDbContext())
-                    {
-                        var row = bd.ROL.ToList().Where(r=>r.ID == id).First();
-                        bd.ROL.Remove(row);
-                        bd.SaveChanges();
-                    }
+
+                        var row = repository.GetById(id);
+                        repository.Delete(row);
+                        repository.Save();
                 }
 
             }
@@ -158,7 +136,6 @@ namespace SistemaPermisos.Controllers
             }
             return List();
     }
-
 
 
 

@@ -33,10 +33,12 @@ namespace SistemaPermisos.Repository
 
             public T GetById(object id)
             {
-                return table.Find(id);
+               
+              return  table.Find(id);
+  
             }
 
-            public void Insert(T obj)
+            public void Add(T obj)
             {
                 table.Add(obj);
             }

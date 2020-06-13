@@ -16,34 +16,12 @@ namespace SistemaPermisos
     {
         protected void Application_Start()
         {
-
-            /// Add call
-            //RegisterAutofac();
-
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        //private void RegisterAutofac()
-        //{
-        //    var builder = new ContainerBuilder();
-        //    builder.RegisterControllers(Assembly.GetExecutingAssembly());
-        //    builder.RegisterSource(new ViewRegistrationSource());
-
-        //    // manual registration of types;
-        //    Repository<ROL> rol = new Repository<ROL>(() => new ApplicationDbContext());
-        //    builder.Register< Repository<ROL>> (a => rol);
-
-        //    Repository<USUARIO> user = new Repository<USUARIO>(() => new ApplicationDbContext());
-        //    builder.Register<Repository<USUARIO>>(a => user);
-
-
-        //    var container = builder.Build();
-
-        //    DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-        //}
-
+       
     }
 }

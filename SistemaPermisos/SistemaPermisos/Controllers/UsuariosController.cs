@@ -36,23 +36,27 @@ namespace SistemaPermisos.Controllers
         public JsonResult List()
         {
 
-            using (var bd = new ApplicationDbContext())
+            try
             {
-                var o = (from x in bd.USUARIO
-                         where x.ACTIVO == true
-                         orderby x.ID descending
-                         select new
-                         {
-                             x.ID,
-                             x.NOMBRE,
-                             VALUE_ROL = x.ID_ROL
-                         }
-                        ).ToList();
-
+                var o = repository.GetAll().Select(
+                    x=> new
+                    {
+                        x.ID,
+                        x.NOMBRE,
+                        VALUE_ROL = x.ID_ROL,
+                        x.ACTIVO
+                    }
+                    ).ToList().Where(p=> p.ACTIVO == true);
+              
 
                 return Json(o, JsonRequestBehavior.AllowGet);
             }
-
+            catch (Exception)
+            {
+                return null;
+            }
+             
+     
         }
 
 
@@ -63,23 +67,20 @@ namespace SistemaPermisos.Controllers
         public JsonResult Filter(USUARIO user)
         {
 
-            using (var bd = new ApplicationDbContext())
-            {
-                var o = (from x in bd.USUARIO   
-                         where x.ACTIVO == true && x.ID == user.ID
-                         orderby x.ID descending
-                         select new
-                             {
-                                 x.ID,
-                                 x.NOMBRE,
-                                 VALUE_ROL = x.ID_ROL
-                             }
-                        ).ToList().OrderByDescending(p=>p.ID);
+            var o = repository.GetAll().Select(
 
+                x => new
+                {
+                    x.ID,
+                    x.NOMBRE,
+                    VALUE_ROL = x.ID_ROL,
+                    x.ACTIVO
+                }
+
+                ).ToList().Where(p=>p.ID == user.ID && p.ACTIVO == true).ToList();
 
                 return Json(o, JsonRequestBehavior.AllowGet);
-            }
-
+        
         }
 
 
@@ -97,36 +98,29 @@ namespace SistemaPermisos.Controllers
         public JsonResult Add(USUARIO u)
         {
 
-
             try
             {
-
-                using (var bd = new ApplicationDbContext())
-                {
-
                     if (u.ID == 0)
                     {
                         //AGREGAR
                         u.FECHA_ALTA = DateTime.Now;
                         u.ACTIVO = true;
-                        bd.USUARIO.Add(u);
-                        bd.SaveChanges();
+                        repository.Add(u);
+                        repository.Save();
 
-                    }
+                }
                     else
                     {
-                        //EDITAR
-                        var o = bd.USUARIO.ToList().Find(r => r.ID == u.ID);
+                    //EDITAR
+                        var o = repository.GetAll().Where(x=> x.ID == u.ID).First();
                         o.NOMBRE = u.NOMBRE;
                         o.ID_ROL = u.ID_ROL;
                         o.FECHA_MOD = DateTime.Now;
-                        bd.USUARIO.Add(o);
-                        bd.Entry(o).State = EntityState.Modified;
-                        bd.SaveChanges();
+                        repository.Update(o);
+                        repository.Save();
 
                     }
 
-                }
             }
             catch (Exception EX)
             {
@@ -146,12 +140,9 @@ namespace SistemaPermisos.Controllers
 
                 if (id > 0)
                 {
-                    using (var bd = new ApplicationDbContext())
-                    {
-                        var row = bd.USUARIO.ToList().Where(r => r.ID == id).First();
-                        bd.USUARIO.Remove(row);
-                        bd.SaveChanges();
-                    }
+                        var row = repository.GetById(id);
+                        repository.Delete(row);
+                        repository.Save();    
                 }
 
             }
