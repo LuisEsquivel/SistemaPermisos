@@ -39,15 +39,15 @@ namespace SistemaPermisos.Controllers
             try
             {
                 var o = repository.GetAll().Select(
-                    x=> new
+                    x => new
                     {
                         x.ID,
                         x.NOMBRE,
                         VALUE_ROL = x.ID_ROL,
                         x.ACTIVO
                     }
-                    ).ToList().Where(p=> p.ACTIVO == true);
-              
+                    ).Where(p => p.ACTIVO == true).ToList();
+
 
                 return Json(o, JsonRequestBehavior.AllowGet);
             }
@@ -77,7 +77,7 @@ namespace SistemaPermisos.Controllers
                     x.ACTIVO
                 }
 
-                ).ToList().Where(p=>p.ID == user.ID && p.ACTIVO == true).ToList();
+                ).Where(p=>p.ID == user.ID && p.ACTIVO == true).ToList();
 
                 return Json(o, JsonRequestBehavior.AllowGet);
         
@@ -106,9 +106,8 @@ namespace SistemaPermisos.Controllers
                         u.FECHA_ALTA = DateTime.Now;
                         u.ACTIVO = true;
                         repository.Add(u);
-                        repository.Save();
 
-                }
+                    }
                     else
                     {
                     //EDITAR
@@ -117,7 +116,6 @@ namespace SistemaPermisos.Controllers
                         o.ID_ROL = u.ID_ROL;
                         o.FECHA_MOD = DateTime.Now;
                         repository.Update(o);
-                        repository.Save();
 
                     }
 
@@ -141,8 +139,7 @@ namespace SistemaPermisos.Controllers
                 if (id > 0)
                 {
                         var row = repository.GetById(id);
-                        repository.Delete(row);
-                        repository.Save();    
+                        repository.Delete(row);  
                 }
 
             }

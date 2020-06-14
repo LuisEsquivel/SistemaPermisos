@@ -41,18 +41,26 @@ namespace SistemaPermisos.Repository
             public void Add(T obj)
             {
                 table.Add(obj);
+                Save();
             }
 
-            public void Update(T obj)
+            public void  Update(T obj)
             {
                 table.Attach(obj);
                 _context.Entry(obj).State = EntityState.Modified;
+                Save();
             }
 
             public void Delete(object id)
             {
                 T existing = table.Find(id);
+
+               if(existing != null)
+            {
                 table.Remove(existing);
+                Save();
+            }
+               
             }
 
             public void Save()

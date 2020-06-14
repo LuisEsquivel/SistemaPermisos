@@ -51,7 +51,7 @@ namespace SistemaPermisos.Controllers
                         DISPLAY_ROL = x.NOMBRE
 
                     }
-                    ).ToList().Where(p=> p.ACTIVO == true).ToList();
+                    ).Where(p=> p.ACTIVO == true).ToList();
 
  
             } catch (Exception)
@@ -70,8 +70,33 @@ namespace SistemaPermisos.Controllers
         public JsonResult Filter(ROL rol)
         {
 
-            var roles = repository.GetAll().Where(x=> x.ID == rol.ID).ToList(); 
-            return Json(roles, JsonRequestBehavior.AllowGet);
+            object o = null;
+
+            try
+            {
+
+                o = repository.GetAll().Select(
+                    x => new
+                    {
+                        x.ID,
+                        x.NOMBRE,
+                        x.ACTIVO,
+
+                        VALUE_ROL = x.ID,
+                        DISPLAY_ROL = x.NOMBRE
+
+                    }
+                    ).Where(p => p.ACTIVO == true && p.ID == rol.ID).ToList();
+
+
+            }
+            catch (Exception)
+            {
+                o = null;
+            }
+
+            return Json(o, JsonRequestBehavior.AllowGet);
+     
    
         }
 
@@ -91,7 +116,6 @@ namespace SistemaPermisos.Controllers
                         rol.FECHA_ALTA = DateTime.Now;
                         rol.ACTIVO = true;
                         repository.Add(rol);
-                        repository.Save();
 
                     }
                     else
@@ -100,7 +124,6 @@ namespace SistemaPermisos.Controllers
                         var o = repository.GetAll().Where(x=> x.ID == rol.ID).First();
                         o.NOMBRE = rol.NOMBRE;
                         repository.Update(o);
-                        repository.Save();
 
                     }
                 
@@ -126,7 +149,6 @@ namespace SistemaPermisos.Controllers
 
                         var row = repository.GetById(id);
                         repository.Delete(row);
-                        repository.Save();
                 }
 
             }

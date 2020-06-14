@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/Content/Site.css"/>
 
     <script type="text/javascript" src="~/Scripts/jquery-3.5.1.js"></script>
 
@@ -32,11 +33,11 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
             <a class="navbar-brand" href="#">Sistema Permisos</a>
 
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0 justify-content-sm-center justify-content-lg-center  justify-content-md-center">
-                <li class="h3 ml-2">@Html.ActionLink("Inicio", "Index", "Home")</li>
-                <li class="h3 ml-2">@Html.ActionLink("Roles", "Index", "Roles")</li>
-                <li class="h3 ml-2">@Html.ActionLink("Usuarios", "Index", "Usuarios")</li>
-                <li class="h3 ml-2">@Html.ActionLink("Operaciones", "Index", "Operaciones")</li>
+            <ul class="navbar-nav mt-lg-0">
+                <li class="mt-4 ml-3" >@Html.ActionLink("Inicio", "Index", "Home",null, new { @class = "li" })</li>
+                <li class="mt-4 ml-3">@Html.ActionLink("Roles", "Index", "Roles", null, new { @class = "li" })</li>
+                <li class="mt-4 ml-3">@Html.ActionLink("Usuarios", "Index", "Usuarios", null, new { @class = "li" })</li>
+                <li class="mt-4 ml-3">@Html.ActionLink("Operaciones", "Index", "Operaciones", null, new { @class = "li" })</li>
             </ul>
           
         </div>

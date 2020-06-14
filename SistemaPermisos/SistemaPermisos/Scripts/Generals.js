@@ -112,6 +112,8 @@ function Table(arrayColumnas, data) {
             'pageLength'
         ],
 
+        order: [[0, "desc"]],
+
         language: Language
     });
 }
