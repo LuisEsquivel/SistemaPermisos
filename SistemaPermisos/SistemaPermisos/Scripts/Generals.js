@@ -143,8 +143,8 @@ var add = function (urlAdd, parameters, arrayColumnas) {
 
             if (data.success == true) {
                 alert(ElRegistroYaExiste);
-            } else if (data.success.includes(":(")) {
-                alert("El registro con los valores: "+data.success + "Ya Existe" +"\n"+ "Verifique" )
+            } else if (JSON.stringify(data).includes(":(")) {
+                alert("El registro con los valores: " +"\n"+  data.exist + "\n" + "Ya Existe" +"\n"+ "Verifique" )
             }
             else {
 

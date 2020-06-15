@@ -15,7 +15,7 @@ function Add() {
 
     form.append("ID", $("#ID").val());
     form.append("NOMBRE", $("#NOMBRE").val());
-    form.append("ROL_ID", $("#VALUE_ROL").val());
+    form.append("ID_ROL", $("#VALUE_ROL").val());
     window.add("/Operaciones/Add", form, ["ID", "NOMBRE", "FECHA_ALTA"]);
 
 }
@@ -26,7 +26,7 @@ function RecuperarInfo(id) {
 
     form.append("ID", id);
 
-    window.filter("/Operaciones/Filter", form, true, false, ["ID", "NOMBRE", "FECHA_ALTA"]);
+    window.filter("/Operaciones/Filter", form, true, false, ["ID", "NOMBRE", "FECHA_ALTA"], true);
 }
 
 
@@ -36,10 +36,6 @@ function EliminarInfo(id) {
 
 }
 
-function SelectedCombos(id) {
-    var form = new FormData();
-
-    form.append("ID", id);
-
-    window.LlenarCombos("/Opereciones/FillCombos");
+function SelectedCombos() {
+    window.LlenarCombos("/Operaciones/FillCombos");
 }

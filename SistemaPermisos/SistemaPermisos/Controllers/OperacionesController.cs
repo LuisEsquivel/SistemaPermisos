@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SistemaPermisos.Interface;
 using SistemaPermisos.Models;
 using SistemaPermisos.Repository;
@@ -12,31 +14,30 @@ namespace SistemaPermisos.Controllers
     public class OperacionesController : Controller
     {
 
-        private  IGenericRepository<OPERACION> repository = null;
-        private IGenericRepository<ROL_OPERACION> rol_ope = null;
-        private IGenericRepository<ROL> rol = null;
-        private RolesController r;
+        public IGenericRepository<OPERACION> repository = null;
+        public RolesController r;
+        public RolOperacionController rol_ope;
 
         // GET: Operaciones
         public ActionResult Index()
         {
+            
             return View();
+           
         }
 
 
         public OperacionesController()
         {
             this.repository = new GenericRepository<OPERACION>();
-            this.rol_ope = new GenericRepository<ROL_OPERACION>();
             this.r = new RolesController();
+            this.rol_ope = new RolOperacionController();
+          
         }
 
-        public OperacionesController(IGenericRepository<OPERACION> repo, IGenericRepository<ROL_OPERACION> rol_ope, IGenericRepository<ROL> rol)
+        public OperacionesController(IGenericRepository<OPERACION> repo)
         {
             this.repository = repo;
-            this.rol_ope = rol_ope;
-            this.rol = rol;
-
         }
 
 
@@ -109,8 +110,13 @@ namespace SistemaPermisos.Controllers
                 if (ope.ID == 0)
                 {
                     //ADD
-                    var existe = repository.GetAll().Where(x => x.NOMBRE == ope.NOMBRE && x.ACTIVO == true && x.ID_ROL == ope.ID_ROL).FirstOrDefault();
-                    if (existe != null) { exist = ":( " + existe.NOMBRE + " " + rol.GetAll().Where(x => x.ID == existe.ID_ROL).FirstOrDefault().NOMBRE; }
+                    var existe = repository.GetAll().Where(x => x.NOMBRE == ope.NOMBRE && x.ACTIVO == true && x.ID_ROL == ope.ID_ROL && x.ID > 0).FirstOrDefault();
+                    if (existe != null)
+                    {    
+                        var nombreRol = "";
+                        nombreRol = r.repository.GetAll().Where(x => x.ID == ope.ID_ROL && x.ACTIVO == true).FirstOrDefault().NOMBRE;
+                        exist = ":( " + Environment.NewLine + existe.NOMBRE + Environment.NewLine + nombreRol;
+                    }
                     else
                     {
 
@@ -118,10 +124,10 @@ namespace SistemaPermisos.Controllers
                         ope.ACTIVO = true;
                         repository.Add(ope);
 
-                        var id_operacion = repository.GetAll().Where(x => x.NOMBRE == ope.NOMBRE && x.ACTIVO == true).FirstOrDefault().ID_OPERACION;
+                        var id_operacion = repository.GetAll().Where(x => x.NOMBRE == ope.NOMBRE && x.ACTIVO == true).FirstOrDefault().ID;
                         ROL_OPERACION r_ope = new ROL_OPERACION();
                         r_ope.ID_ROL = ope.ID_ROL;
-                        r_ope.ID_OPERACION = ope.ID;
+                        r_ope.ID_OPERACION = id_operacion;
                         rol_ope.Add(r_ope);
 
                     }
@@ -131,35 +137,45 @@ namespace SistemaPermisos.Controllers
                 {
                     //UPDATE
                     var existe = repository.GetAll().Where(x => x.ID != ope.ID && x.NOMBRE == ope.NOMBRE && x.ACTIVO == true && x.ID_ROL == ope.ID_ROL).FirstOrDefault();
-                    if(existe!=null && existe.ACTIVO) { exist = ":( "+existe.NOMBRE +" "+rol.GetAll().Where(x=>x.ID==ope.ID_ROL).FirstOrDefault().NOMBRE; }
+                    if(existe!=null && existe.ACTIVO)
+                    {
+                        var nombreRol = "";
+                        nombreRol = r.repository.GetAll().Where(x => x.ID == ope.ID_ROL && x.ACTIVO == true).FirstOrDefault().NOMBRE;
+                        exist = ":( "  + Environment.NewLine + existe.NOMBRE + Environment.NewLine + nombreRol;
+
+                    }
                     else
                     {
-                        //UPDATE OPERACION TABLE
+                       
+                        //GET OBJECT OPERACION
                         var o = repository.GetAll().Where(x => x.ID == ope.ID).FirstOrDefault();
-                        o.FECHA_MOD = DateTime.Now;
-                        o.NOMBRE = ope.NOMBRE;
-                        o.ID_ROL = ope.ID_ROL;
-                        repository.Update(o);
 
-                           //UPDATE ROL_OPERACION TABLE N:N
-                            var ro = rol_ope.GetAll().Where(x=> x.ID_OPERACION == o.ID_OPERACION).FirstOrDefault();                         
-                            ROL_OPERACION r_ope = new ROL_OPERACION();
-                            ro.ID_ROL = ope.ID_ROL;
-                            ro.ID_OPERACION = ope.ID;
-                            rol_ope.Update(ro);
-                      
+                        //UPDATE ROL_OPERACION TABLE N:N
+                        var list = rol_ope.List();
+                        ROL_OPERACION ro = new ROL_OPERACION();
+                        ro.ID_OPERACION = o.ID;
+                        ro.ID_ROL = o.ID_ROL;
+                        rol_ope.Add(ro);
+
+
+                            //UPDATE OPERACION TABLE
+                            o.FECHA_MOD = DateTime.Now;
+                            o.NOMBRE = ope.NOMBRE;
+                            o.ID_ROL = ope.ID_ROL;
+                            repository.Update(o);
 
                     }
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                var ajas = ex.ToString();
                 return null;
             }
 
 
-            if (exist!=null || exist!= string.Empty) { return Json(new { success = exist }); }
+            if (exist!=null && exist!= "") { return Json(new { exist }); }
 
 
             return List();

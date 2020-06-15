@@ -13,8 +13,8 @@ namespace SistemaPermisos.Controllers
     public class UsuariosController : Controller
     {
 
-        private IGenericRepository<USUARIO> repository = null;
-        private RolesController r;
+        public IGenericRepository<USUARIO> repository = null;
+        public RolesController r;
         
         public UsuariosController()
         {

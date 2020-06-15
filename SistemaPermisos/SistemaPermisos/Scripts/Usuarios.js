@@ -37,10 +37,6 @@ function EliminarInfo(id) {
 }
 
 
-function SelectedCombos(id) {
-    var form = new FormData();
-
-    form.append("ID", id);
-
+function SelectedCombos() {
     window.LlenarCombos("/Usuarios/FillCombos");
 }

@@ -13,7 +13,7 @@ namespace SistemaPermisos.Controllers
     public class RolesController : Controller
     {
 
-        private IGenericRepository<ROL> repository = null;
+        public IGenericRepository<ROL> repository = null;
 
         public RolesController()
         {
