@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", function (event) {
     window.LoadCombos("/Usuarios/FillCombos");
-    window.listar("/Usuarios/List", ["ID", "NOMBRE"], null, true);
+    window.listar("/Usuarios/List", ["ID", "NOMBRE", "FECHA_ALTA"], null, true);
 });
 
 
@@ -15,7 +15,7 @@ function Add() {
     form.append("NOMBRE", $("#NOMBRE").val());
     form.append("ID_ROL", $("#VALUE_ROL").val());
 
-    window.add("/Usuarios/Add", form, ["ID", "NOMBRE"]);
+    window.add("/Usuarios/Add", form, ["ID", "NOMBRE", "FECHA_ALTA"]);
     
 }
 
@@ -25,14 +25,14 @@ function RecuperarInfo(id) {
 
     form.append("ID", id);
 
-    window.filter("/Usuarios/Filter", form, true, false, ["ID", "NOMBRE"], true, true);
+    window.filter("/Usuarios/Filter", form, true, false, ["ID", "NOMBRE", "FECHA_ALTA"], true, true);
     
 }
 
 
 function EliminarInfo(id) {
 
-    window.Delete("/Usuarios/Delete", id, ["ID", "NOMBRE"]);
+    window.Delete("/Usuarios/Delete", id, ["ID", "NOMBRE", "FECHA_ALTA"]);
 
 }
 

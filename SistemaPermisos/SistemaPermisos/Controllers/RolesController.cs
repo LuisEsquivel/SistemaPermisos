@@ -46,6 +46,7 @@ namespace SistemaPermisos.Controllers
                         x.ID,
                         x.NOMBRE,
                         x.ACTIVO,
+                        FECHA_ALTA =  x.FECHA_ALTA.ToShortDateString(),
 
                         VALUE_ROL = x.ID,
                         DISPLAY_ROL = x.NOMBRE
@@ -81,6 +82,7 @@ namespace SistemaPermisos.Controllers
                         x.ID,
                         x.NOMBRE,
                         x.ACTIVO,
+                        FECHA_ALTA = x.FECHA_ALTA.ToShortDateString(),
 
                         VALUE_ROL = x.ID,
                         DISPLAY_ROL = x.NOMBRE

@@ -44,7 +44,8 @@ namespace SistemaPermisos.Controllers
                         x.ID,
                         x.NOMBRE,
                         VALUE_ROL = x.ID_ROL,
-                        x.ACTIVO
+                        x.ACTIVO,
+                        FECHA_ALTA = x.FECHA_ALTA.ToShortDateString()
                     }
                     ).Where(p => p.ACTIVO == true).ToList();
 
@@ -74,7 +75,8 @@ namespace SistemaPermisos.Controllers
                     x.ID,
                     x.NOMBRE,
                     VALUE_ROL = x.ID_ROL,
-                    x.ACTIVO
+                    x.ACTIVO,
+                    FECHA_ALTA = x.FECHA_ALTA.ToShortDateString()
                 }
 
                 ).Where(p=>p.ID == user.ID && p.ACTIVO == true).ToList();

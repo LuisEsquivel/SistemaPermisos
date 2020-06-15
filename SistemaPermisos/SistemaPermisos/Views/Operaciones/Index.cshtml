@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "Roles";
+}
+
+
+<script src="~/Scripts/Generals.js"></script>
+<script src="~/Scripts/Operaciones.js"></script>
+
+
+
+<h2>Operaciones</h2>
+
+
+
+<div id="container">
+
+</div>
+
+
+<div class="modal" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="form">
+
+                    <div class="row ml-2">
+                        <div class="col-sm">
+                            <label for="ID">Id</label>
+                            <input type="text" class="form-control" id="ID" name="ID" disabled>
+                        </div>
+
+                        <div class="col-sm">
+                            <label for="NOMBRE">Nombre</label>
+                            <input type="text" class="form-control" id="NOMBRE" name="NOMBRE" required>
+                        </div>
+                  </div>
+
+                        <div class="row ml-2">
+                            <div class="col-sm mt-3">
+                                <label for="ROL">Rol</label>
+                                <select type="text" class="form-control dropdown" id="VALUE_ROL" name="ID_ROL" required style="height:34PX;"></select>
+                            </div>
+                        </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="BtnEnviar" onclick="Add()">Enviar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

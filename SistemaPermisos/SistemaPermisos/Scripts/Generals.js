@@ -18,7 +18,7 @@ var listar = function (url, arrayColumnas, parameters) {
 
         success: function (data) {
 
-            window.Table(arrayColumnas, data);
+            Table(arrayColumnas, data);
             
         },
         error: function () {
@@ -52,11 +52,17 @@ function Table(arrayColumnas, data) {
 
     for (i = 0; i < arrayColumnas.length; i++) {
         contenido += "<th>";
-        contenido += arrayColumnas[i];
+
+        var theadColumn = arrayColumnas[i];
+
+        if (theadColumn.includes("_")) {
+            theadColumn = theadColumn.replace("_", " ");
+        }
+        contenido += theadColumn;
         contenido += "</th>";
     }
 
-    contenido += "<th class='text-center'> Acciones </th>" ;
+    contenido += "<th class='text-center'> ACCIONES </th>" ;
 
     contenido += "</tr>";
     contenido += "</thead>";
@@ -73,7 +79,6 @@ function Table(arrayColumnas, data) {
 
             var cell = arrayColumnas[celda];
 
-       
             contenido += "<td>";
             contenido += data[row][cell];
             contenido += "</td>";
@@ -135,9 +140,13 @@ var add = function (urlAdd, parameters, arrayColumnas) {
 
         success: function (data) {
 
+
             if (data.success == true) {
                 alert(ElRegistroYaExiste);
-            } else {
+            } else if (data.success.includes(":(")) {
+                alert("El registro con los valores: "+data.success + "Ya Existe" +"\n"+ "Verifique" )
+            }
+            else {
 
 
                 if (data != null) {
