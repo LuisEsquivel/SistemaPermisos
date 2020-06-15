@@ -107,23 +107,36 @@ namespace SistemaPermisos.Controllers
         public JsonResult Add(ROL rol)
         {
 
+            bool exist = false;
+
             try
             {
 
-                    if (rol.ID == 0)
+                if (rol.ID == 0)
+                {
+                    //AGREGAR
+                    var existe = repository.GetAll().Where(x=> x.NOMBRE == rol.NOMBRE && x.ACTIVO == true).FirstOrDefault();
+
+                    if (existe!=null && existe.ACTIVO) {exist = true;}
+                    else
                     {
-                        //AGREGAR
                         rol.FECHA_ALTA = DateTime.Now;
                         rol.ACTIVO = true;
                         repository.Add(rol);
+                    }
 
                     }
                     else
                     {
-                    //EDITAR
-                        var o = repository.GetAll().Where(x=> x.ID == rol.ID).First();
-                        o.NOMBRE = rol.NOMBRE;
-                        repository.Update(o);
+                    //EDITAR   
+                        var existe = repository.GetAll().Where(x=> x.NOMBRE == rol.NOMBRE && x.ID != rol.ID && x.ACTIVO == true).FirstOrDefault();
+                        if (existe!=null && existe.ACTIVO) { exist = true; }
+                        else
+                        {
+                            var o = repository.GetAll().Where(x => x.ID == rol.ID).FirstOrDefault();
+                            o.NOMBRE = rol.NOMBRE;
+                            repository.Update(o);
+                        }
 
                     }
                 
@@ -134,6 +147,8 @@ namespace SistemaPermisos.Controllers
                 return null;
             }
 
+            if (exist) { return Json(new { success = exist }); } //if data exist
+            
             return List();
         }
 

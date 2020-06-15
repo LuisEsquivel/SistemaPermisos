@@ -98,24 +98,39 @@ namespace SistemaPermisos.Controllers
         public JsonResult Add(USUARIO u)
         {
 
+            bool exist = false;
+
             try
             {
                     if (u.ID == 0)
                     {
-                        //AGREGAR
+                    //AGREGAR
+                    var existe = repository.GetAll().Where(x => x.NOMBRE == u.NOMBRE && x.ACTIVO == true).FirstOrDefault();
+                    if(existe != null && existe.ACTIVO) { exist = true; }
+                    else
+                    {
                         u.FECHA_ALTA = DateTime.Now;
                         u.ACTIVO = true;
                         repository.Add(u);
+                    }
+                      
 
                     }
                     else
                     {
                     //EDITAR
-                        var o = repository.GetAll().Where(x=> x.ID == u.ID).First();
+                    var existe = repository.GetAll().Where(x => x.NOMBRE == u.NOMBRE && x.ID != u.ID && x.ACTIVO == true).FirstOrDefault();
+
+                    if (existe != null && existe.ACTIVO) { exist = true; }
+                    else
+                    {
+                        var o = repository.GetAll().Where(x => x.ID == u.ID).First();
                         o.NOMBRE = u.NOMBRE;
                         o.ID_ROL = u.ID_ROL;
                         o.FECHA_MOD = DateTime.Now;
                         repository.Update(o);
+
+                    }
 
                     }
 
@@ -125,6 +140,8 @@ namespace SistemaPermisos.Controllers
                 var AJAS = EX.ToString();
                 return null;
             }
+
+            if (exist) { return Json(new { success = exist }); } //If data exist
 
             return List();
         }

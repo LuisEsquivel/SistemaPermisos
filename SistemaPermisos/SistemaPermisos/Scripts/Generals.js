@@ -3,6 +3,7 @@ var ErrorAlGuardar = "Ocurrió un error al guardar";
 var GuardadoCorrectamente = "Se guardó correctamente";
 var SeEliminoCorrectamente = "Se eliminó correctamente";
 var ErrorAlEliminar = "Ocurrió un error al eliminar";
+var ElRegistroYaExiste = "El Registro Ya Existe!!"+ "\n"+ "Verifique" ;
 
 
 
@@ -134,16 +135,22 @@ var add = function (urlAdd, parameters, arrayColumnas) {
 
         success: function (data) {
 
-            if (data != null) {
-                alert(GuardadoCorrectamente);
-                Table(arrayColumnas, data);
-                Limpiar();
-                CerrarModal();
-
+            if (data.success == true) {
+                alert(ElRegistroYaExiste);
             } else {
-                alert(ErrorAlGuardar);
-            }
 
+
+                if (data != null) {
+                    alert(GuardadoCorrectamente);
+                    Table(arrayColumnas, data);
+                    Limpiar();
+                    CerrarModal();
+
+                } else {
+                    alert(ErrorAlGuardar);
+                }
+
+            }
      
         },
         error: function (xhr, status, error) {
