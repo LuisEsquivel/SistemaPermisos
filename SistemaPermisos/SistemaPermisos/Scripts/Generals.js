@@ -7,7 +7,7 @@ var ElRegistroYaExiste = "El Registro Ya Existe!!"+ "\n"+ "Verifique" ;
 
 
 
-var listar = function (url, arrayColumnas, parameters) {
+var listar = function (url, arrayColumnas, parameters, urlLoadCheckBox) {
 
     $.ajax({
         method: "GET",
@@ -19,6 +19,7 @@ var listar = function (url, arrayColumnas, parameters) {
         success: function (data) {
 
             Table(arrayColumnas, data);
+            LoadCheckbox(urlLoadCheckBox);
             
         },
         error: function () {
@@ -199,7 +200,7 @@ function Limpiar() {
 
 
 
-var filter = function (url, parameters, llenarModal, llenarTable, campos, selectedCombos) {
+var filter = function (url, parameters, llenarModal, llenarTable, campos, selectedCombos, urlLoadCheckBox) {
 
     $.ajax({
         method: "POST",
@@ -211,6 +212,9 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos, select
 
 
         success: function (data) {
+
+      
+            LoadCheckbox(urlLoadCheckBox);
 
             if (data != null && llenarModal == true) {
                 LlenarModal(data, campos);
@@ -225,6 +229,8 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos, select
             if (data != null && llenarTable == true) {
                 Table(arrayColumnas, data);
             }
+
+
         },
         error: function () {
             console.log("No se ha podido obtener la información");
@@ -409,6 +415,81 @@ function Delete(urlDelete, id, arrayColumnas) {
 }
 
 
+
+var LoadCheckbox = function (url) {
+
+    if (url != null) {
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            dataType: "json",
+
+
+            success: function (data) {
+
+                PintarCheckBox(data);
+
+            },
+            error: function () {
+                console.log("No se ha podido obtener la información");
+            }
+        });
+
+    }
+
+}
+
+
+function PintarCheckBox(data, dataSelected) {
+
+    if (data != null) {
+
+        var ContainerCheckBox = document.getElementById("ContainerCheckBox");
+        var contenido = "";
+        contenido += "<h4 class='mt-5'>Operaciones</h4>"
+
+        var keys = Object.keys(data[0]);
+
+
+        for (i = 0; i < data.length; i++) {
+
+            for (k = 0; k < keys.length; k++) {
+
+                var name = keys[k];
+      
+                var CheckBoxName = "";
+                var CheckBoxValue = 0;
+
+                if (name == "ID") {
+                    CheckBoxValue  = data[i][name];
+                    
+                } 
+
+                if (name == "NOMBRE") {
+                    CheckBoxName = data[i][name];
+
+                    contenido += "<div class='form-check ml-4 mt-3'>";
+                    contenido += "<input type='checkbox' class='form-check-input'  value='" + CheckBoxValue + "'>";
+
+                    contenido += "<label  class='form-check-label ml-4'>";
+                    contenido += CheckBoxName;
+                    contenido += "</label >";
+
+                    contenido += "</div>";
+
+                }
+
+            }
+
+        }
+
+        }
+
+
+       ContainerCheckBox.innerHTML = contenido;
+
+    }
 
 
 

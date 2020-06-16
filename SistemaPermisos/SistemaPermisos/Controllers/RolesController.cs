@@ -14,10 +14,12 @@ namespace SistemaPermisos.Controllers
     {
 
         public IGenericRepository<ROL> repository = null;
+        public OperacionesController ope;
 
         public RolesController()
         {
             this.repository = new GenericRepository<ROL>();
+            this.ope = new OperacionesController();
         }
 
         public RolesController(IGenericRepository<ROL> repository)
@@ -177,6 +179,30 @@ namespace SistemaPermisos.Controllers
     }
 
 
+
+        public JsonResult LoadCheckBox()
+        {
+
+            try
+            {
+
+                var o = ope.repository.GetAll().Select(
+                           x => new
+                           {
+                               x.ID,
+                               x.NOMBRE
+
+                           }).ToList();
+
+
+                return Json(o, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
 
     }
 

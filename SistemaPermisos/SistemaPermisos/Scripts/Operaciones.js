@@ -3,7 +3,7 @@
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
-    window.LoadCombos("/Operaciones/FillCombos");
+    //window.LoadCombos("/Operaciones/FillCombos");
     window.listar("/Operaciones/List", ["ID", "NOMBRE", "FECHA_ALTA"]);
 
 });
@@ -15,7 +15,6 @@ function Add() {
 
     form.append("ID", $("#ID").val());
     form.append("NOMBRE", $("#NOMBRE").val());
-    form.append("ID_ROL", $("#VALUE_ROL").val());
     window.add("/Operaciones/Add", form, ["ID", "NOMBRE", "FECHA_ALTA"]);
 
 }

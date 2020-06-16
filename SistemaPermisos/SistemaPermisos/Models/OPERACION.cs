@@ -27,8 +27,6 @@ namespace SistemaPermisos.Models
 
         public bool ACTIVO { get; set; }
 
-        public int ID_ROL { get; set; }
-
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ROL_OPERACION> ROL_OPERACION { get; set; }

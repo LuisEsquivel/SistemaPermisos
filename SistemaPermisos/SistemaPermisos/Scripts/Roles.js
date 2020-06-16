@@ -1,7 +1,7 @@
 ﻿
 
 document.addEventListener("DOMContentLoaded", function (event) {
-    window.listar("/Roles/List", ["ID", "NOMBRE", "FECHA_ALTA"]);
+    window.listar("/Roles/List", ["ID", "NOMBRE", "FECHA_ALTA"], null, "/Roles/LoadCheckBox");
     
 });
 
@@ -22,7 +22,7 @@ function RecuperarInfo(id) {
 
     form.append("ID", id);
 
-    window.filter("/Roles/Filter", form, true, false, ["ID", "NOMBRE", "FECHA_ALTA"]);
+    window.filter("/Roles/Filter", form, true, false, ["ID", "NOMBRE", "FECHA_ALTA"], false, "/Roles/LoadCheckBox");
 }
 
 

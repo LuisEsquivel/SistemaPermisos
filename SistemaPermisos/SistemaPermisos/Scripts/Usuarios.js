@@ -25,7 +25,7 @@ function RecuperarInfo(id) {
 
     form.append("ID", id);
 
-    window.filter("/Usuarios/Filter", form, true, false, ["ID", "NOMBRE", "FECHA_ALTA"], true, true);
+    window.filter("/Usuarios/Filter", form, true, false, ["ID", "NOMBRE", "FECHA_ALTA"], true, null);
     
 }
 
