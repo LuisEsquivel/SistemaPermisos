@@ -40,7 +40,7 @@ function Table(arrayColumnas, data) {
     container.classList.add("container");
     var contenido = "";
 
-    contenido += "<input type='button' id='BtnAdd' value='Add' class='btn btn-success' onclick='return AbrirModal(true);'/>";
+    contenido += "<input type='button' id='BtnAdd' value='Add' class='btn btn-success' onclick='return AbrirModal(1);'/>";
 
     if (data == null) {
         container.innerHTML = contenido;
@@ -174,12 +174,10 @@ var add = function (urlAdd, parameters, arrayColumnas) {
 
 function AbrirModal(operacion) {
 
-
-    if (operacion == true) {
+    if (operacion == 1) {
         Limpiar();
         $(".modal-title").text("Agregar " + $("#Title").text());
-        $("#modal").modal("show");
-        operacion = null;
+        $("#modal").modal("show"); 
     }
 
     if (operacion == null) {
@@ -187,7 +185,7 @@ function AbrirModal(operacion) {
         $("#modal").modal("show");
     }
 
-
+    operacion = null;
   
 }
 
