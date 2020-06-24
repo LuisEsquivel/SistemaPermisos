@@ -454,37 +454,50 @@ function PintarCheckBox(data, dataSelected) {
 
         for (i = 0; i < data.length; i++) {
 
+            var CheckBoxName = "";
+            var CheckBoxValue = 0;
+            var Ckecked = 0;
+            var id = 0;
+
+
             for (k = 0; k < keys.length; k++) {
 
                 var name = keys[k];
       
-                var CheckBoxName = "";
-                var CheckBoxValue = 0;
-
                 if (name == "ID") {
                     CheckBoxValue  = data[i][name];
-                    
+                    id = data[i][name];
                 } 
 
                 if (name == "NOMBRE") {
                     CheckBoxName = data[i][name];
+                }
 
-                    contenido += "<div class='form-check ml-4 mt-3'>";
-                    contenido += "<input type='checkbox' class='form-check-input'  value='" + CheckBoxValue + "'>";
-
-                    contenido += "<label  class='form-check-label ml-4'>";
-                    contenido += CheckBoxName;
-                    contenido += "</label >";
-
-                    contenido += "</div>";
-
+                if (name.includes("CHECKED")) {
+                    Ckecked = data[i][name];
                 }
 
             }
 
-        }
+            contenido += "<div class='form-check ml-4 mt-3'>";
+
+            if (Ckecked > 0) {
+                contenido += "<input checked type='checkbox' class='form-check-input'  value='" + CheckBoxValue + "' id='" + id +">";
+            }
+
+            if (Ckecked == 0) {
+                contenido += "<input type='checkbox' class='form-check-input'  value='" + CheckBoxValue + "' id='"+id+"'>";
+            }
+
+            contenido += "<label  class='form-check-label ml-4'>";
+            contenido += CheckBoxName;
+            contenido += "</label >";
+
+            contenido += "</div>";
 
         }
+
+     }
 
 
        ContainerCheckBox.innerHTML = contenido;

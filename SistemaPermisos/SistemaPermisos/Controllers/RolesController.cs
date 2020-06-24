@@ -15,11 +15,13 @@ namespace SistemaPermisos.Controllers
 
         public IGenericRepository<ROL> repository = null;
         public OperacionesController ope;
+        public RolOperacionController rol_ope;
 
         public RolesController()
         {
             this.repository = new GenericRepository<ROL>();
             this.ope = new OperacionesController();
+            this.rol_ope = new RolOperacionController();
         }
 
         public RolesController(IGenericRepository<ROL> repository)
@@ -186,13 +188,21 @@ namespace SistemaPermisos.Controllers
             try
             {
 
-                var o = ope.repository.GetAll().Select(
-                           x => new
-                           {
-                               x.ID,
-                               x.NOMBRE
 
-                           }).ToList();
+                var o = (from op in ope.repository.GetAll()
+                         join rop in rol_ope.repository.GetAll()
+                         on op.ID equals rop.ID_OPERACION
+                         into tabla
+                         from sub in tabla.DefaultIfEmpty()
+                       
+                         select new
+                         {
+                             op.ID,
+                             op.NOMBRE,
+                             CHECKED = sub?.ID ?? 0
+
+                         }
+                         ).ToList();
 
 
                 return Json(o, JsonRequestBehavior.AllowGet);
