@@ -3,7 +3,8 @@ var ErrorAlGuardar = "Ocurrió un error al guardar";
 var GuardadoCorrectamente = "Se guardó correctamente";
 var SeEliminoCorrectamente = "Se eliminó correctamente";
 var ErrorAlEliminar = "Ocurrió un error al eliminar";
-var ElRegistroYaExiste = "El Registro Ya Existe!!"+ "\n"+ "Verifique" ;
+var ElRegistroYaExiste = "El Registro Ya Existe!!" + "\n" + "Verifique";
+var idTable = "";
 
 
 
@@ -47,7 +48,9 @@ function Table(arrayColumnas, data) {
         container.innerHTML = contenido;
     }
 
-    contenido += "<table class='table mt-5' id='Table'>";
+    idTable = "Table" + $("#Title").text();
+
+    contenido += "<table class='table mt-5' id='" + idTable+"'>";
     contenido += "<thead class='bg-dark text-white'>";
     contenido += "<tr>";
 
@@ -110,20 +113,38 @@ function Table(arrayColumnas, data) {
 
     container.innerHTML = contenido;
 
-    $('#Table').DataTable({
+    $('#' + idTable).DataTable({
         lengthMenu: [
             [7, 14, 21, -1],
             ['7 rows', '14 rows', '21 rows', 'Todo']
         ],
-        buttons: [
-            'pageLength'
-        ],
-
+ 
         order: [[0, "desc"]],
 
         language: Language
     });
+
+
+    TableDesign();
 }
+
+function TableDesign() {
+    $("#" + idTable + "_filter").addClass("text-primary");
+    $("#" + idTable + "_length").addClass("text-primary");
+    $("#" + idTable + "_info").addClass("text-primary");
+    $("#" + idTable + "_paginate").addClass("text-primary");
+    $(".form-control-sm").addClass("text-primary");
+
+}
+
+$(document).ready(function () {
+
+    $.extend($.fn.dataTableExt.oStdClasses, {
+        "sFilterInput": "form-control text-primary",
+        "sLengthSelect": "form-control dropdown mr-2 ml-2 pr-1  pb-1 pt-1  text-primary"
+    });
+
+});
 
 
 
@@ -203,7 +224,11 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos, select
                 Table(arrayColumnas, data);
             }
 
+        
+            if (urlLoadCheckBox != null) {
             LoadCheckbox(urlLoadCheckBox, parameters.get("ID"));
+
+            }
 
 
         },

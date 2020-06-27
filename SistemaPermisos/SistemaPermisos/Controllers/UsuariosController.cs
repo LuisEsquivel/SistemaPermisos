@@ -38,16 +38,33 @@ namespace SistemaPermisos.Controllers
 
             try
             {
-                var o = repository.GetAll().Select(
-                    x => new
-                    {
-                        x.ID,
-                        x.NOMBRE,
-                        VALUE_ROL = x.ID_ROL,
-                        x.ACTIVO,
-                        FECHA_ALTA = x.FECHA_ALTA.ToShortDateString()
-                    }
-                    ).Where(p => p.ACTIVO == true).ToList();
+
+                var o = repository.GetAll()
+                             .Join(r.repository.GetAll(),
+                                user => user.ID_ROL,
+                                rol => rol.ID,
+                                (user, rol)
+                                => new
+                                {
+                                    user.ID,
+                                    user.NOMBRE,
+                                    VALUE_ROL = user.ID_ROL,
+                                    ROL = rol.NOMBRE,
+                                    user.ACTIVO,
+                                    FECHA_ALTA = user.FECHA_ALTA.ToShortDateString()
+                                }).ToList(); 
+                            
+
+                //var o = repository.GetAll().Select(
+                //    x => new
+                //    {
+                //        x.ID,
+                //        x.NOMBRE,
+                //        VALUE_ROL = x.ID_ROL,
+                //        x.ACTIVO,
+                //        FECHA_ALTA = x.FECHA_ALTA.ToShortDateString()
+                //    }
+                //    ).Where(p => p.ACTIVO == true).ToList();
 
 
                 return Json(o, JsonRequestBehavior.AllowGet);
