@@ -128,7 +128,7 @@ function Table(arrayColumnas, data) {
 
 
 
-var add = function (urlAdd, parameters, arrayColumnas) {
+var add = function (urlAdd, parameters, arrayColumnas, checkbox) {
 
 
     $.ajax({
@@ -173,31 +173,6 @@ var add = function (urlAdd, parameters, arrayColumnas) {
 
 
 
-function AbrirModal(operacion) {
-
-    if (operacion == 1) {
-        Limpiar();
-        $(".modal-title").text("Agregar " + $("#Title").text());
-        $("#modal").modal("show"); 
-    }
-
-    if (operacion == null) {
-        $(".modal-title").text("Editar " + $("#Title").text());
-        $("#modal").modal("show");
-    }
-
-    operacion = null;
-  
-}
-
-function CerrarModal() {
-    $("#modal").modal("hide");
-}
-
-function Limpiar() {
-    $('#form').trigger("reset");
-}
-
 
 
 var filter = function (url, parameters, llenarModal, llenarTable, campos, selectedCombos, urlLoadCheckBox) {
@@ -212,9 +187,7 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos, select
 
 
         success: function (data) {
-
-      
-            LoadCheckbox(urlLoadCheckBox);
+   
 
             if (data != null && llenarModal == true) {
                 LlenarModal(data, campos);
@@ -229,6 +202,8 @@ var filter = function (url, parameters, llenarModal, llenarTable, campos, select
             if (data != null && llenarTable == true) {
                 Table(arrayColumnas, data);
             }
+
+            LoadCheckbox(urlLoadCheckBox, parameters.get("ID"));
 
 
         },
@@ -416,19 +391,25 @@ function Delete(urlDelete, id, arrayColumnas) {
 
 
 
-var LoadCheckbox = function (url) {
+var LoadCheckbox = function (url, id = 0) {
+
 
     if (url != null) {
+
+        var parametros = {
+            "id": id,
+        };
 
         $.ajax({
             method: "POST",
             url: url,
+            data: parametros,
             dataType: "json",
-
+   
 
             success: function (data) {
 
-                PintarCheckBox(data);
+                PintarCheckBox(data, id);
 
             },
             error: function () {
@@ -441,7 +422,7 @@ var LoadCheckbox = function (url) {
 }
 
 
-function PintarCheckBox(data, dataSelected) {
+function PintarCheckBox(data, idChecked = 0) {
 
     if (data != null) {
 
@@ -479,21 +460,28 @@ function PintarCheckBox(data, dataSelected) {
 
             }
 
-            contenido += "<div class='form-check ml-4 mt-3'>";
+            //contenido += "<div class='form-check ml-4 mt-3'>";
 
-            if (Ckecked > 0) {
-                contenido += "<input checked type='checkbox' class='form-check-input'  value='" + CheckBoxValue + "' id='" + id +">";
+            contenido += "<label>";
+
+         
+            if (Ckecked > 0 && Ckecked == idChecked) {
+                contenido += "<input type='checkbox' class='chk' checked  value='" + CheckBoxValue + "' id='" + id +"'>";
+
             }
 
-            if (Ckecked == 0) {
-                contenido += "<input type='checkbox' class='form-check-input'  value='" + CheckBoxValue + "' id='"+id+"'>";
+            if (Ckecked == 0 || Ckecked != idChecked) {
+                contenido += "<input type='checkbox' class='chk'  value='" + CheckBoxValue + "' id='" + id + "'>";
+
             }
 
-            contenido += "<label  class='form-check-label ml-4'>";
+          
             contenido += CheckBoxName;
             contenido += "</label >";
+            contenido += "</br >";
 
-            contenido += "</div>";
+            //contenido += "</div>";
+       
 
         }
 
@@ -503,6 +491,42 @@ function PintarCheckBox(data, dataSelected) {
        ContainerCheckBox.innerHTML = contenido;
 
     }
+
+
+
+
+function AbrirModal(operacion) {
+
+    if (operacion == 1) {
+        Limpiar();
+        $(".modal-title").text("Agregar " + $("#Title").text());
+        $("#modal").modal("show");
+    }
+
+    if (operacion == null) {
+        $(".modal-title").text("Editar " + $("#Title").text());
+        $("#modal").modal("show");
+    }
+
+    operacion = null;
+
+}
+
+function CerrarModal() {
+    $("#modal").modal("hide");
+}
+
+function Limpiar() {
+
+    //there are checkbox
+    if ($(".chk").length > 0) {
+        $(".chk").removeAttr("checked");
+    }
+
+    $('#form').trigger("reset");
+
+
+}
 
 
 

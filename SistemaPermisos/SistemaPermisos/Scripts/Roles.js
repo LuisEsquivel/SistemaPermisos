@@ -12,6 +12,9 @@ function Add() {
 
     form.append("ID", $("#ID").val());
     form.append("NOMBRE", $("#NOMBRE").val());
+
+    form.append("checkbox", checkbox());
+    
     window.add("/Roles/Add", form, ["ID", "NOMBRE", "FECHA_ALTA"]);
    
 }
@@ -30,4 +33,24 @@ function EliminarInfo(id) {
 
     window.Delete("/Roles/Delete", id, ["ID", "NOMBRE", "FECHA_ALTA"]);
 
+}
+
+
+function checkbox() {
+    var ncheckbox = document.getElementsByClassName("chk");
+    var checkbox = new Int32Array(ncheckbox.length);
+
+    for (i = 0; i < ncheckbox.length; i++) {
+        if (ncheckbox[i].checked == true) {
+            checkbox[i] = ncheckbox[i].id;
+        }
+
+    }
+
+    var checks;
+    if (checkbox.length > 0) {
+        checks = checkbox;
+    }
+
+    return checks;
 }

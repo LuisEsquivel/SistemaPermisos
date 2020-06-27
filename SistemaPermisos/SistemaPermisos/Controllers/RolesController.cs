@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Transactions;
 
 namespace SistemaPermisos.Controllers
 {
@@ -110,7 +111,7 @@ namespace SistemaPermisos.Controllers
 
 
         [HttpPost]
-        public JsonResult Add(ROL rol)
+        public JsonResult Add(ROL rol, object [] checkbox)
         {
 
             bool exist = false;
@@ -126,9 +127,17 @@ namespace SistemaPermisos.Controllers
                     if (existe!=null && existe.ACTIVO) {exist = true;}
                     else
                     {
-                        rol.FECHA_ALTA = DateTime.Now;
-                        rol.ACTIVO = true;
-                        repository.Add(rol);
+                        using (var scope = new TransactionScope())
+                        {
+                            rol.FECHA_ALTA = DateTime.Now;
+                            rol.ACTIVO = true;
+                            repository.Add(rol);
+
+                            if (UpdateOperaciones(rol.ID, checkbox) == false) return null;
+
+                            scope.Complete();
+                        }
+
                     }
 
                     }
@@ -139,10 +148,20 @@ namespace SistemaPermisos.Controllers
                         if (existe!=null && existe.ACTIVO) { exist = true; }
                         else
                         {
+
+                        using (var scope = new TransactionScope())
+                        {
                             var o = repository.GetAll().Where(x => x.ID == rol.ID).FirstOrDefault();
                             o.NOMBRE = rol.NOMBRE;
                             repository.Update(o);
+
+                            if (UpdateOperaciones(rol.ID, checkbox) == false) return null;
+
+                            scope.Complete();
                         }
+  
+
+                    }
 
                     }
                 
@@ -159,6 +178,7 @@ namespace SistemaPermisos.Controllers
         }
 
 
+       [HttpPost]
         public JsonResult Delete(int id)
         {
 
@@ -168,8 +188,15 @@ namespace SistemaPermisos.Controllers
                 if(id > 0)
                 {
 
-                        var row = repository.GetById(id);
-                        repository.Delete(row);
+                    using (var scope = new TransactionScope())
+                    {
+
+                        if (UpdateOperaciones(id, null, true) == false) return null;
+                        repository.Delete(id);
+                   
+                        scope.Complete();
+                    }
+
                 }
 
             }
@@ -182,38 +209,170 @@ namespace SistemaPermisos.Controllers
 
 
 
-        public JsonResult LoadCheckBox()
+        [HttpPost]
+        public JsonResult LoadCheckBox(int id)
         {
+
+            object o = null;
 
             try
             {
 
+                if (id > 0)
+                {
 
-                var o = (from op in ope.repository.GetAll()
-                         join rop in rol_ope.repository.GetAll()
-                         on op.ID equals rop.ID_OPERACION
+
+                    //get operaciones All
+                    var op = ope.repository.GetAll()
+                        .Select
+                        (
+                        x => new
+                        {
+                            x.ID,
+                            x.NOMBRE,
+                            CHECKED = 0
+                        }
+                        )
+                        .ToList()
+                        ;
+
+                  //get operaciones by rol 
+                   var rop =   rol_ope.repository.GetAll()
+                        .Select
+                        (
+                         x=> new
+                         {
+                             x.ID_ROL,
+                             x.ID_OPERACION
+                         }
+                        )
+                        .Where
+                        (
+                        x => x.ID_ROL == id
+                        )
+                        .ToList();
+                        ;
+
+
+                    //join operaciones - rol
+                    o = (from oper in op
+                         join ro in rop
+                         on oper.ID equals ro.ID_OPERACION
+
                          into tabla
-                         from sub in tabla.DefaultIfEmpty()
-                       
+                         from t in tabla.DefaultIfEmpty()
+
                          select new
                          {
-                             op.ID,
-                             op.NOMBRE,
-                             CHECKED = sub?.ID ?? 0
+                             oper.ID,
+                             oper.NOMBRE,
+                             CHECKED  = t?.ID_ROL ?? 0
 
                          }
                          ).ToList();
 
+  
+                }
+                else
+                {
+                    o = ope.repository.GetAll()
+                        .Select
+                        (x => new
+                        {
+                            x.ID,
+                            x.NOMBRE,
+                            CHECKED = 0
+                        }
+                        ).OrderBy(p=> p.ID).ToList();
+
+                }
 
                 return Json(o, JsonRequestBehavior.AllowGet);
+
             }
+
             catch (Exception)
             {
                 return null;
             }
-
+        
         }
 
+
+        public bool UpdateOperaciones(int id, object[] checkbox, bool delete = false)
+        {
+
+          
+            try
+            {
+                if (delete == false)
+                {
+
+                    string[] split = null;
+
+                    if (checkbox != null){
+                        foreach (object item in checkbox)
+                        {
+                            split = item.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        }
+
+
+                        foreach (string item in split)
+                        {
+                            var operacion = item;
+
+                            if (operacion != null && operacion != "0")
+                            {
+                                var rop = rol_ope.repository.GetAll()
+                                     .Where
+                                     (
+                                      x => x.ID_ROL == id
+                                      &&
+                                      x.ID_OPERACION == int.Parse(item)
+                                     ).FirstOrDefault();
+
+
+                                var o = new ROL_OPERACION();
+                                o.ID_ROL = id;
+                                o.ID_OPERACION = int.Parse(item);
+                                rol_ope.repository.Add(o);
+
+
+                            }
+
+                        }
+
+                    }
+                }
+                else
+                {
+                    foreach (var row in rol_ope.repository.GetAll().Where(x => x.ID_ROL == id).ToList())
+                    {
+                        rol_ope.repository.Delete(row.ID);
+                    }
+                }
+
+
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+
+            return true;
+        }
+
+
     }
+    
+
+    public class CheckBox
+    {
+        public int checkbox { get; set; }
+    }
+
 
 }
