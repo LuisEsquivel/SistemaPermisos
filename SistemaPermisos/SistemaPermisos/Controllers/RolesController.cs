@@ -155,6 +155,10 @@ namespace SistemaPermisos.Controllers
                             o.NOMBRE = rol.NOMBRE;
                             repository.Update(o);
 
+                            //delete rol-operaciones
+                            if (UpdateOperaciones(rol.ID, null, true) == false) return null;
+
+                            //add rol-operaciones
                             if (UpdateOperaciones(rol.ID, checkbox) == false) return null;
 
                             scope.Complete();
